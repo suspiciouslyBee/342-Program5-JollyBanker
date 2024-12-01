@@ -30,7 +30,7 @@ class BankTree {
     bool BuildTree(string &fileName);
     bool ApplyTransaction(Transaction &rhs);
     bool Insert(Transaction &item);
-    bool Contains(const int &clientID_, Client *&account);
+    bool Contains(const int &clientID, Client *&account);
 
     void Display();
 
