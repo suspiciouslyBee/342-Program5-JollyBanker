@@ -27,9 +27,20 @@ class BankTree {
     BankTree(const BankTree &rhs);
     ~BankTree();
 
-    bool BuildTree(string &fileName);
-    bool ApplyTransaction(Transaction &rhs);
-    bool Insert(Transaction &item);
+    //  queue manip
+    void ClearQueue();
+    bool BuildQueue(string &fileName);
+    bool ExecuteQueue();
+
+
+
+    //need to keep in mind: transfer is essentially a
+    // withdrawl and then a deposit.
+    bool ExecuteTransaction(Transaction &rhs);
+    bool CreateClient(Transaction &item);
+    
+    //note to self: dp/wdis transfering from a hypothetically infinite acc
+    bool MoveFunds(Transaction &rhs);
     bool Contains(const int &clientID, Client *&account);
 
     void Display();
@@ -37,8 +48,11 @@ class BankTree {
 
   private:
 
+    
+
     int count;
     Client *root_;
+    queue<Transaction> transactionQueue_;  
 };
 
 #endif BANKTREE_H_

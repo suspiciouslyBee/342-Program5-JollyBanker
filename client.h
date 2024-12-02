@@ -14,11 +14,12 @@ using namespace std;
 
 class Client {
   public:
+    vector<Transaction> history_;
   private:
     int ID_;
     int localFunds_[8];
     
-    vector<Transaction> history_;
+    
 
     Client *left_;
     Client *right_;
