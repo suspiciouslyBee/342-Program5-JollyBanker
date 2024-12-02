@@ -27,6 +27,7 @@ bool BankTree::BuildQueue(string &fileName) {
   Transaction transactionHopper;  //should be fresh and not need clearing first
 
   //load lines sucessively
+  //usage: instr id (first last) |  ()
   while(getline(file, hopper)){
 
 
@@ -41,10 +42,10 @@ bool BankTree::BuildQueue(string &fileName) {
 
 
     //Special split here if the data is an O
+    //load the data otherwise.
     if(instr_ == 'O'){ 
       parser >> nameHopper[0];
       parser >> nameHopper[1];
-      transactionHopper.Setup(nameHopper[0], nameHopper[1], otherData[0]);
     } else {
       //Keeps parsing until it fails or reaches the max amount of vals
       //Jank as hell. might have UB if parser still puts stuff in in a fail
@@ -52,11 +53,20 @@ bool BankTree::BuildQueue(string &fileName) {
         parser >> otherData[i];
       }
       //build the transactionHopper with our data. passing array and length 
-      transactionHopper.Setup(otherData, 5);
+      //TODO: go back to the old manual setup, or code the parsing in this setup
     }
 
     
-    
+    //interpret parser with switch statement
+    switch(instr_) {
+      case 'O':
+        transactionHopper.Setup(otherData[0], nameHopper[0], nameHopper[1]);
+        break;
+      case ''
+      default:
+        return false;
+
+    }
 
     //save our work, queue should make a deep copy here
     transactionQueue_.push(transactionHopper);
@@ -142,10 +152,12 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
     rhs.SetFail();
     src->history_.push_back(rhs);
-
   }
 
-  //make the transfer
+  //progress through transfering, keep checking if valid.
+  //tenatively store results
+  
+  if(*)
 
 
   //write the results

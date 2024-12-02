@@ -24,8 +24,11 @@ class Transaction {
     void SetName(const string &last, const string &first);
     void Clear();
 
-    void Setup(const int array[], int len);
-    void Setup(const string &last, const string &first, const int &ID);
+
+    void Setup(const char &instr, const int &srcID, const int &dstID, 
+                const FundType &fund, const int &amount);
+    //strings imply this is an open.
+    void Setup(const int &ID, const string &last, const string &first);
 
   private:
     char instruction_;
