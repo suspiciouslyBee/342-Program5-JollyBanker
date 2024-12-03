@@ -19,7 +19,7 @@ bool BankTree::BuildQueue(string &fileName) {
 
 
   //parse each line, create new object. push to queue
-  char instr_ = 0;
+  char instr = 0;
   int otherData[5] = {-1};
   string hopper;
   string nameHopper[2];
@@ -35,7 +35,7 @@ bool BankTree::BuildQueue(string &fileName) {
     //Assumes the format is correct. grabs the first char
     
     parser << hopper;
-    parser >> instr_;
+    parser >> instr;
 
     //Parses int because all args have second int (an id)
     parser >> otherData[0];
@@ -43,13 +43,13 @@ bool BankTree::BuildQueue(string &fileName) {
 
     //Special split here if the data is an O
     //load the data otherwise.
-    if(instr_ == 'O'){ 
+    if(instr == 'O'){ 
       parser >> nameHopper[0];
       parser >> nameHopper[1];
     } else {
       //Keeps parsing until it fails or reaches the max amount of vals
       //Jank as hell. might have UB if parser still puts stuff in in a fail
-      for(int i = 1; !parser.fail() && i < 5; i++) {
+      for(int i = 1; !parser.eof() && i < 5; i++) {
         parser >> otherData[i];
       }
       //build the transactionHopper with our data. passing array and length 
@@ -58,14 +58,30 @@ bool BankTree::BuildQueue(string &fileName) {
 
     
     //interpret parser with switch statement
-    switch(instr_) {
+    switch(instr) {
       case 'O':
         transactionHopper.Setup(otherData[0], nameHopper[0], nameHopper[1]);
         break;
-      case ''
+      case 'D':
+        transactionHopper.Setup(instr, -1, UNDEFINED, otherData[0], 
+                                otherData[1], otherData[2]);
+        break;
+      case 'W':
+        transactionHopper.Setup(instr, otherData[0], otherData[1], -1, 
+                                UNDEFINED, otherData[2]);
+        break;
+      case 'T':
+        transactionHopper.Setup(instr, otherData[0], otherData[1], otherData[2],
+                                otherData[3], otherData[4]);
+        break;
+      case 'A':
+        transactionHopper.Setup(instr, otherData[0], -1, -1, -1, -1);
+        break;
+      case 'F':
+        transactionHopper.Setup(instr, otherData[0], otherData[1], -1, -1, -1);
+        break;      
       default:
         return false;
-
     }
 
     //save our work, queue should make a deep copy here
@@ -121,7 +137,7 @@ bool BankTree::ExecuteTransaction(Transaction &rhs) {
 //Wrapper for Insert, id must be pos.
 bool BankTree::CreateClient(Transaction &rhs) {
   Client *dummy = nullptr;
-  return Insert(rhs, rhs.ID(), dummy);
+  if(Insert(rhs.Name(), rhs.ID(), dummy)) { return false; }
 }
 
 
@@ -150,7 +166,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
       errorTgt = src;
     }
 
-    rhs.SetFail();
+    rhs.Affirm();
     src->history_.push_back(rhs);
   }
 

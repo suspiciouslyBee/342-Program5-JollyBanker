@@ -15,6 +15,9 @@ using namespace std;
 
 class Client {
   public:
+    Client();
+    Client(const int &ID, const string name[]);
+
     vector<Transaction> history_;
   private:
     int ID_;
@@ -23,7 +26,7 @@ class Client {
     //returns amt withdrawled or -1 if invalid
     int Withdrawl(const int &money, const FundType &FUCK); 
     
-    
+    string name_[2];
 
     Client *left_;
     Client *right_;

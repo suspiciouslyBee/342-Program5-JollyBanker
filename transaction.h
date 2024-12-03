@@ -25,8 +25,9 @@ class Transaction {
     void Clear();
 
 
-    void Setup(const char &instr, const int &srcID, const int &dstID, 
-                const FundType &fund, const int &amount);
+  
+    void Setup(const char &instr, const int &srcID, const int &srcFund, 
+                const int &dstID, const int &dstFund, const int &amount);
     //strings imply this is an open.
     void Setup(const int &ID, const string &last, const string &first);
 

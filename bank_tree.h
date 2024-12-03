@@ -45,6 +45,10 @@ class BankTree {
 
     void Display();
 
+    bool Insert(string name[], const int &ID, Client *node);
+    Client* Find(const int &ID, Client *node);
+    void PrintTree(Client* t, ostream& out) const;
+
 
   private:
 
