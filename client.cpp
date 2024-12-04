@@ -26,7 +26,9 @@ void Client::AppendInstruction(Transaction &rhs)
   //Inserts accordingly
   if(rhs.SrcID() == ID_) {
     history_.at(rhs.SrcFund()).push_back(rhs);
-  } else if (rhs.DstID() == ID_) {
+  }
+  
+  if (rhs.DstID() == ID_) {
     history_.at(rhs.DstFund()).push_back(rhs);
   }
 
@@ -57,8 +59,18 @@ int Client::Withdrawal(const int &money, const int &fundID) {
   }
 
   //diff is negative check if its got overdraft protection
+  //need to log the coverage
+
+  //srcfund 
   if(kOverdraftProtectionAccount.at(fundID) != UNDEFINED) {
     if(localFunds_[kOverdraftProtectionAccount.at(fundID)] + difference >= 0) {
+
+      //Normally, the higher context handles this. But this special case needs
+      //to be logged *right now*.
+      Transaction adHoc('T', ID_, kOverdraftProtectionAccount.at(fundID), ID_,
+                        fundID, -difference);
+      AppendInstruction(adHoc);
+
       localFunds_[fundID] = 0;
       localFunds_[kOverdraftProtectionAccount.at(fundID)] += difference;
       return money;
