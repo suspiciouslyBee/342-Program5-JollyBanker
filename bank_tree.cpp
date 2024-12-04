@@ -39,13 +39,17 @@ bool BankTree::BuildQueue(string &fileName) {
 
     //Parses int because all args have second int (an id)
     parser >> otherData[0];
-
+    vector<string> fullName;
 
     //Special split here if the data is an O
     //load the data otherwise.
     if(instr == 'O'){ 
       parser >> nameHopper[0];
       parser >> nameHopper[1];
+      
+      fullName.push_back(nameHopper[0]);
+      fullName.push_back(nameHopper[1]);
+
     } else {
       //Keeps parsing until it fails or reaches the max amount of vals
       //Jank as hell. might have UB if parser still puts stuff in in a fail
@@ -60,7 +64,7 @@ bool BankTree::BuildQueue(string &fileName) {
     //interpret parser with switch statement
     switch(instr) {
       case 'O':
-        transactionHopper.Setup(otherData[0], nameHopper[0], nameHopper[1]);
+        transactionHopper.Setup(otherData[0], fullName);
         break;
       case 'D':
         transactionHopper.Setup(instr, -1, UNDEFINED, otherData[0], 
@@ -154,27 +158,87 @@ bool BankTree::MoveFunds(Transaction &rhs) {
     return false;
   }
 
-  //one of them is now null
-  if(rhs.Instruction() == 'T' && (src == nullptr || dst == nullptr)) {
-    //write fail, ternary to keep code clean (breaks c++ guidelines)
+  //node validation checks
+  switch(rhs.Instruction()) {
+    case 'T':
 
-    Client *errorTgt = nullptr;
+      //one of them is now null, if its a transfer thats breaking! bail!
+      if(rhs.Instruction() == 'T' && (src == nullptr || dst == nullptr)) {
+       //write fail, ternary to keep code clean (breaks c++ guidelines)
 
-    if(src == nullptr) {
-      errorTgt = dst;
-    } else {
-      errorTgt = src;
-    }
+        Client *errorTgt = nullptr;
 
-    rhs.Affirm();
-    src->history_.push_back(rhs);
+        if(src == nullptr) {
+          errorTgt = dst;
+        } else {
+          errorTgt = src;
+        }
+
+        rhs.Affirm(false);
+        errorTgt->AppendInstruction(rhs);
+        return false;
+      }
+
+      //nodes exist, attempt transfer
+      //src needs to be valid first
+      if(!src->Withdrawal(rhs.Amount(), rhs.SrcFund())) {
+        return false;
+      }
+
+      dst->Deposit(rhs.Amount(), rhs.DstFund());
+      break;
+    case 'W':
+
+      //Source node does not exist
+      if(src == nullptr) { 
+        rhs.Affirm(false);
+        dst->AppendInstruction(rhs);
+        return false;
+      }
+
+      //Src node has insufficient funds
+      if(!src->Withdrawal(rhs.Amount(), rhs.SrcFund())) {
+        rhs.Affirm(false);
+        dst->AppendInstruction(rhs);
+        src->AppendInstruction(rhs);
+        return false;
+      }
+
+      //Deposit doesn't work for some reason
+      if(!dst->Deposit(rhs.Amount(), rhs.DstFund()) {
+        rhs.Affirm(false);
+        dst->AppendInstruction(rhs);
+        src->AppendInstruction(rhs);
+        return false;
+      }
+
+      rhs.Affirm(true);
+      dst->AppendInstruction(rhs);
+      src->AppendInstruction(rhs);
+      return true;
+
+      break;
+    case 'D':
+      if(dst == nullptr) { return false; }
+
+      return dst->Deposit(rhs.Amount(), rhs.DstFund());
+
+      break;
+
   }
+
+
+
 
   //progress through transfering, keep checking if valid.
   //tenatively store results
-  
-  if(*)
 
+  //TODO check if null or magic number first lmao
+  if(rhs.Instruction() == 'W' || rhs.Instruction() == 'T') {
+    if(src->Withdrawal(rhs.Amount(), rhs.Fund()) != rhs.Amount()){
+
+    }
+  }
 
   //write the results
 

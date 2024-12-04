@@ -21,7 +21,7 @@ class Transaction {
 
 
     char Instruction();
-    void SetName(const string &last, const string &first);
+    void SetName(const vector<string> &name);
     void Clear();
 
 
@@ -29,7 +29,7 @@ class Transaction {
     void Setup(const char &instr, const int &srcID, const int &srcFund, 
                 const int &dstID, const int &dstFund, const int &amount);
     //strings imply this is an open.
-    void Setup(const int &ID, const string &last, const string &first);
+    void Setup(const int &ID, const vector<string> &name);
 
   private:
     char instruction_;
@@ -37,10 +37,10 @@ class Transaction {
     int srcID_;
     int dstID_;
 
-    string name_[2];
+    vector<string> name_;
 
     FundType fund_;
 
-    bool success; //write/affirm once, needs to be copied to all iteraitons
+    bool success_; //write/affirm once, needs to be copied to all iteraitons
 
 };
