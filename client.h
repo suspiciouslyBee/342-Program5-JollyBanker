@@ -26,8 +26,16 @@ class Client {
     //special error returns
     //-1 : insufficient funds
     //-2 : FundType doesnt exist!
-    int Withdrawal(const int &money, const FundType &FUCK);
-    int Deposit(const int &money, const FundType &FUCK);
+    int Withdrawal(const int &money, const int &fundID);
+    int Deposit(const int &money, const int &fundID);
+
+    bool InLocalFunds(const int &fundIndex);
+    
+    //simple concactinated name
+    string Name();
+
+    vector<string> SeperatedName();
+
   private:
     int ID_;
     int localFunds_[8]; //hardcoded size for now

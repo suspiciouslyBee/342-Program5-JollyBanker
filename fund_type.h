@@ -1,17 +1,19 @@
 // Centralized header for funds. 
 // As this is fixed, this should not be editble in run time as of this version
 
+//global lookup
+
 #ifndef FUNDTYPE_H_
 #define FUNDTYPE_H_
 
-#include <utility>
+/*#include <utility>
 
 
 //imply the id by fixed pos
 vector<pair<string, int>> kFundTypes = {
   {"Money Market", 0},
-}
-
+};
+*/
 enum FundType {
   UNDEFINED = -1,
   MONEYMARKET, //MM can pull from each other

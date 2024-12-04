@@ -25,6 +25,7 @@ class BankTree {
   public:
     BankTree();
     BankTree(const BankTree &rhs);
+    BankTree(string &fileName); //Autoruns Build & execute
     ~BankTree();
 
     //  queue manip
@@ -36,16 +37,19 @@ class BankTree {
 
     //need to keep in mind: transfer is essentially a
     // withdrawl and then a deposit.
+
+    //transaction manip
     bool ExecuteTransaction(Transaction &rhs);
     bool CreateClient(Transaction &item);
-    
-    //note to self: dp/wdis transfering from a hypothetically infinite acc
     bool MoveFunds(Transaction &rhs);
+
+    //special bst manip
+    bool AuditClient(const int &clientID);
+    bool AuditClient(const int &clientID, const int &fundID);
+
+    //bst manip
     bool Contains(const int &clientID, Client *&account);
-
-    void Display();
-
-    bool Insert(string name[], const int &ID, Client *node);
+    bool Insert(vector<string> name, const int &ID, Client *node);
     Client* Find(const int &ID, Client *node);
     void PrintTree(Client* t, ostream& out) const;
 

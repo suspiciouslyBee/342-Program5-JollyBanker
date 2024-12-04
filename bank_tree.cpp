@@ -98,9 +98,7 @@ bool BankTree::BuildQueue(string &fileName) {
 
   }
 
-  //pop each obj, execute the instruction
-
-  //TODO: returns
+  return true;
 }
 
 
@@ -130,9 +128,9 @@ bool BankTree::ExecuteTransaction(Transaction &rhs) {
     case 'T':
       return MoveFunds(rhs);
     case 'A':
-      return AuditClient(rhs.srcID());
+      return AuditClient(rhs.SrcID());
     case 'F':
-      return AuditClient(rhs.srcID(), rhs.Fund());
+      return AuditClient(rhs.SrcID(), rhs.FundID());
     default:
       return false;
   }
@@ -141,7 +139,7 @@ bool BankTree::ExecuteTransaction(Transaction &rhs) {
 //Wrapper for Insert, id must be pos.
 bool BankTree::CreateClient(Transaction &rhs) {
   Client *dummy = nullptr;
-  if(Insert(rhs.Name(), rhs.ID(), dummy)) { return false; }
+  if(Insert(rhs.Name(), rhs.SrcID(), dummy)) { return false; }
 }
 
 
@@ -156,37 +154,45 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
   //Sanity Check: Do either nodes exist?
   //cannot log to a node if not found
-  if(!Find(rhs.srcID(), src) && !Find(rhs.dstID(), dst)) {
+  if(!Find(rhs.SrcID(), src) && !Find(rhs.DstID(), dst)) {
 
     cerr << "ERROR: Neither Account found. Both IDs cannot be invalid." 
           << "Money movement refused: \n";
 
     cerr << "srcID: ";
-    if(rhs.srcID() == -1) {
+    if(rhs.SrcID() == -1) {
       cerr << "Placeholder Deposit ID -1\n";
     } else {
-      cerr << rhs.srcID() << endl;
+      cerr << rhs.SrcID() << endl;
     }
 
     cerr << "srcID: ";
-    if(rhs.dstID() == -1) {
+    if(rhs.DstID() == -1) {
       cerr << "Placeholder Withdrawl ID -1\n";
     } else {
-      cerr << rhs.dstID() << endl;
+      cerr << rhs.DstID() << endl;
     }
     
     cerr << endl;
     return false;
   }
 
-  //Sanity Check: Could the Fund Types exist in the broadest (D/W) case?
-  if(rhs.srcFund() < UNDEFINED || rhs.srcFund() >= NUMBEROFFUNDS) {
 
-  }
+  if(rhs.Amount() < 0) {
+    cerr << "ERROR: Transaction amount (" << rhs.Amount() 
+          << ") cannot be negative Money movement refused: \n";
 
+    rhs.Affirm(false);
 
-  if(rhs.dstFund() < UNDEFINED || rhs.dstFund() >= NUMBEROFFUNDS) {
-    
+    if(src) {
+      src->AppendInstruction(rhs);
+    }
+
+    if(dst) {
+      dst->AppendInstruction(rhs);
+    }
+
+    return false;
   }
 
   //node validation checks
@@ -212,17 +218,17 @@ bool BankTree::MoveFunds(Transaction &rhs) {
               << "Transferal refused: \n";
 
         cerr << "srcID: ";
-        if(rhs.srcID() == -1) {
+        if(rhs.SrcID() == -1) {
          cerr << "Placeholder Deposit ID -1\n";
         } else {
-        cerr << rhs.srcID() << endl;
+        cerr << rhs.SrcID() << endl;
         }
 
         cerr << "srcID: ";
-        if(rhs.dstID() == -1) {
+        if(rhs.DstID() == -1) {
           cerr << "Placeholder Withdrawl ID -1\n";
         } else {
-          cerr << rhs.dstID() << endl;
+          cerr << rhs.DstID() << endl;
         }
     
         cerr << endl;
@@ -230,77 +236,151 @@ bool BankTree::MoveFunds(Transaction &rhs) {
         return false;
       }
 
-      //nodes exist, attempt transfer
-      //src needs to be valid first
+      //Nodes exist. 
+      
+      //Sanity Check: do the funds exist
+      if(!src->InLocalFunds(rhs.SrcFund()) || !dst->InLocalFunds(rhs.DstFund()))
+      {
+        cerr << "ERROR: Movement to invalid fund. Transferal refused: \n";
 
-      if(src->Withdrawal(rhs.Amount(), rhs.SrcFund() == -1)) {
-        
+        cerr << "Source Fund: ";
+        if(src->InLocalFunds(rhs.SrcFund())) {
+          cerr << kFundNames.at(rhs.SrcFund()) << endl;
+        } else {
+          cerr << rhs.SrcFund() << endl;
+        }
 
-        cerr << "ERROR: Insufficient funds from
+        cerr << "Destination Fund: ";
+        if(dst->InLocalFunds(rhs.DstFund())) {
+          cerr << kFundNames.at(rhs.DstFund());
+        } else {
+          cerr << rhs.DstFund() << endl;
+        }
+    
+        cerr << endl;
+
+        rhs.Affirm(false);
+        dst->AppendInstruction(rhs);
+        src->AppendInstruction(rhs);
 
         return false;
       }
 
+
+      if(src->Withdrawal(rhs.Amount(), rhs.SrcFund()) < 0) {
+        cerr << "ERROR: Insufficient funds from " 
+          << kFundNames.at(rhs.SrcFund()) << " at " << src->Name()
+          << ", " << rhs.SrcID() << endl;
+        rhs.Affirm(false);
+        dst->AppendInstruction(rhs);
+        src->AppendInstruction(rhs);
+        return false;
+      }
+
+      //By now, dst is VALID, amount is VALID, DstFund is VALID. Assumption time
       dst->Deposit(rhs.Amount(), rhs.DstFund());
+
+      rhs.Affirm(true);
+      dst->AppendInstruction(rhs);
+      src->AppendInstruction(rhs);
+      return true;
       break;
     case 'W':
 
       //Source node does not exist
       if(src == nullptr) { 
         rhs.Affirm(false);
-        dst->AppendInstruction(rhs);
+
+        cerr << "ERROR: Account not found. Withdrawal refused: \n";
+
+        cerr << "srcID: ";
+        if(rhs.SrcID() == -1) {
+         cerr << "Placeholder Deposit ID -1\n";
+        } else {
+        cerr << rhs.SrcID() << endl;
+        }
+        return false;
+      }
+      
+
+      //Sanity Check: does the fund exist
+      if(!src->InLocalFunds(rhs.SrcFund()))
+      {
+        cerr << "ERROR: Movement to invalid fund. Withdrawal refused: \n";
+
+        cerr << "Source Fund: ";
+        if(src->InLocalFunds(rhs.SrcFund())) {
+          cerr << kFundNames.at(rhs.SrcFund()) << endl;
+        } else {
+          cerr << rhs.SrcFund() << endl;
+        }
+    
+        cerr << endl;
+        rhs.Affirm(true);
+        src->AppendInstruction(rhs);
+
         return false;
       }
 
-      //Src node has insufficient funds
-      if(!src->Withdrawal(rhs.Amount(), rhs.SrcFund())) {
+
+      if(src->Withdrawal(rhs.Amount(), rhs.SrcFund()) < 0) {
+        cerr << "ERROR: Insufficient funds from " 
+          << kFundNames.at(rhs.SrcFund()) << " at " << src->Name()
+          << ", " << rhs.SrcID() << endl;
         rhs.Affirm(false);
-        dst->AppendInstruction(rhs);
         src->AppendInstruction(rhs);
         return false;
       }
 
-      //Deposit doesn't work for some reason
-      if(!dst->Deposit(rhs.Amount(), rhs.DstFund()) {
-        rhs.Affirm(false);
-        dst->AppendInstruction(rhs);
-        src->AppendInstruction(rhs);
-        return false;
-      }
 
       rhs.Affirm(true);
-      dst->AppendInstruction(rhs);
       src->AppendInstruction(rhs);
       return true;
-
       break;
     case 'D':
-      if(dst == nullptr) {
+
+
+      //Source node does not exist
+      if(dst == nullptr) { 
         rhs.Affirm(false);
-        cerr << "ERROR: Account " << rhs.dstID() 
-              << " not found. Transferal refused.\n";
-        return false; 
+    
+        cerr << "ERROR: Account not found. Deposit refused: \n";
+
+        cerr << "dstID: ";
+        if(rhs.DstID() == -1) {
+         cerr << "Placeholder Deposit ID -1\n";
+        } else {
+        cerr << rhs.DstID() << endl;
+        }
+        return false;
       }
 
-      return dst->Deposit(rhs.Amount(), rhs.DstFund());
+      if(dst->InLocalFunds(rhs.DstFund())) {
+        cerr << "ERROR: Deposit to invalid fund. Deposit refused: \n";
 
+        cerr << "Destination Fund: ";
+        if(dst->InLocalFunds(rhs.DstFund())) {
+          cerr << kFundNames.at(rhs.DstFund());
+        } else {
+          cerr << rhs.DstFund() << endl;
+        }
+    
+        cerr << endl;
+
+        rhs.Affirm(false);
+        dst->AppendInstruction(rhs);
+
+        return false;
+      }
+
+
+      dst->Deposit(rhs.Amount(), rhs.DstID());
+      rhs.Affirm(true);
+      dst->AppendInstruction(rhs);
+      return true;
       break;
-
   }
 
-
-
-
-  //progress through transfering, keep checking if valid.
-  //tenatively store results
-
-  //TODO check if null or magic number first lmao
-  if(rhs.Instruction() == 'W' || rhs.Instruction() == 'T') {
-    if(src->Withdrawal(rhs.Amount(), rhs.Fund()) != rhs.Amount()){
-
-    }
-  }
-
-  //write the results
-
+  cerr << "ERROR: UNKNOWN ERROR" << endl;
+  return false;
 }

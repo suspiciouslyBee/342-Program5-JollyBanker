@@ -23,6 +23,15 @@ class Transaction {
     char Instruction();
     void SetName(const vector<string> &name);
     void Clear();
+    void Affirm(const bool &state);
+    int Amount();
+    int DstID();
+    int DstFund();
+    int SrcFund();
+    int SrcID();
+    int FundID();
+
+    vector<string> Name();
 
 
   
