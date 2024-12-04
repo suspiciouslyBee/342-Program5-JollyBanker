@@ -17,6 +17,7 @@
 //all vals need to init nul or -1 (except id)
 class Transaction {
   public:
+
     Transaction();
     ~Transaction();
 
