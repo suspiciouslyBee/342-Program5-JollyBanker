@@ -23,8 +23,11 @@ class Client {
     void AppendInstruction(const Transaction &rhs);
 
     //if the return matches input, the instruction was valid
-    bool Withdrawal(const int &money, const FundType &FUCK);
-    bool Deposit(const int &money, const FundType &FUCK);
+    //special error returns
+    //-1 : insufficient funds
+    //-2 : FundType doesnt exist!
+    int Withdrawal(const int &money, const FundType &FUCK);
+    int Deposit(const int &money, const FundType &FUCK);
   private:
     int ID_;
     int localFunds_[8]; //hardcoded size for now

@@ -153,9 +153,40 @@ bool BankTree::MoveFunds(Transaction &rhs) {
   Client *src = nullptr;
   Client *dst = nullptr;
 
-  //one or both are nullptr, neither can be nullptr if 
+
+  //Sanity Check: Do either nodes exist?
+  //cannot log to a node if not found
   if(!Find(rhs.srcID(), src) && !Find(rhs.dstID(), dst)) {
+
+    cerr << "ERROR: Neither Account found. Both IDs cannot be invalid." 
+          << "Money movement refused: \n";
+
+    cerr << "srcID: ";
+    if(rhs.srcID() == -1) {
+      cerr << "Placeholder Deposit ID -1\n";
+    } else {
+      cerr << rhs.srcID() << endl;
+    }
+
+    cerr << "srcID: ";
+    if(rhs.dstID() == -1) {
+      cerr << "Placeholder Withdrawl ID -1\n";
+    } else {
+      cerr << rhs.dstID() << endl;
+    }
+    
+    cerr << endl;
     return false;
+  }
+
+  //Sanity Check: Could the Fund Types exist in the broadest (D/W) case?
+  if(rhs.srcFund() < UNDEFINED || rhs.srcFund() >= NUMBEROFFUNDS) {
+
+  }
+
+
+  if(rhs.dstFund() < UNDEFINED || rhs.dstFund() >= NUMBEROFFUNDS) {
+    
   }
 
   //node validation checks
@@ -176,12 +207,37 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
         rhs.Affirm(false);
         errorTgt->AppendInstruction(rhs);
+
+        cerr << "ERROR: Both Accounts not found. T needs two valid IDs." 
+              << "Transferal refused: \n";
+
+        cerr << "srcID: ";
+        if(rhs.srcID() == -1) {
+         cerr << "Placeholder Deposit ID -1\n";
+        } else {
+        cerr << rhs.srcID() << endl;
+        }
+
+        cerr << "srcID: ";
+        if(rhs.dstID() == -1) {
+          cerr << "Placeholder Withdrawl ID -1\n";
+        } else {
+          cerr << rhs.dstID() << endl;
+        }
+    
+        cerr << endl;
+
         return false;
       }
 
       //nodes exist, attempt transfer
       //src needs to be valid first
-      if(!src->Withdrawal(rhs.Amount(), rhs.SrcFund())) {
+
+      if(src->Withdrawal(rhs.Amount(), rhs.SrcFund() == -1)) {
+        
+
+        cerr << "ERROR: Insufficient funds from
+
         return false;
       }
 
@@ -219,7 +275,12 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
       break;
     case 'D':
-      if(dst == nullptr) { return false; }
+      if(dst == nullptr) {
+        rhs.Affirm(false);
+        cerr << "ERROR: Account " << rhs.dstID() 
+              << " not found. Transferal refused.\n";
+        return false; 
+      }
 
       return dst->Deposit(rhs.Amount(), rhs.DstFund());
 
