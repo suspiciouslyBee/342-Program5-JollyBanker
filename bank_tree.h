@@ -48,9 +48,9 @@ class BankTree {
     bool AuditClient(const int &clientID, const int &fundID);
 
     //bst manip
-    bool Contains(const int &clientID, Client *&account);
+    //bool Contains(const int &clientID, Client *&account);
     bool Insert(vector<string> name, const int &ID, Client *node);
-    Client* Find(const int &ID, Client *node);
+    Client* Find(const int &ID, Client *node) const;
     void PrintTree(Client* t, ostream& out) const;
 
 

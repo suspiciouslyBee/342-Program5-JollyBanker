@@ -384,3 +384,72 @@ bool BankTree::MoveFunds(Transaction &rhs) {
   cerr << "ERROR: UNKNOWN ERROR" << endl;
   return false;
 }
+
+bool BankTree::Insert(vector<string> name, const int &ID, Client *node) {
+	////
+	// check for match first, should return nullptr. if we dont have a 
+	// nullptr that means a match was found
+	////
+	bool latch = true;
+
+	if (root_ == nullptr) {
+		root_ = new Client(ID, name);
+    count++;
+		return true;
+	}
+	if (Find(ID, node) != nullptr) { return false; } //match
+	while (latch) {
+		if (ID > node->ID()) {
+			if (node->right_) {
+				node = node->right_;
+			}
+			else {
+				node->right_ = new Client(ID, name);
+        count++;
+				latch = false;
+			}
+		}
+
+		if (ID < node->ID()) {
+			if (node->left_) {
+				node = node->left_;
+			}
+			else {
+				node->left_ = new Client(ID, name);
+        count++;
+				latch = false;
+			}
+		}
+	}
+	if (latch) {
+		return false;
+	}
+	return true;
+}
+
+Client* BankTree::Find(const int &ID, Client* node) const {
+
+		if (root_ == nullptr || node == nullptr) { return nullptr; }
+
+		if (ID == node->ID()) { return node; }
+
+		if (ID > node->ID()) {
+			if (node->right_) {
+				return Find(ID, node->right_);
+			}
+		}
+
+		if (ID < node->ID()) {
+			if (node->left_) {
+				return Find(ID, node->left_);
+			}
+		}
+
+		////
+		// When here: if node has a value, and the value is greater or less 
+		// than all other values, we can then take node and use that for insert
+		////
+
+		return nullptr;
+	}
+

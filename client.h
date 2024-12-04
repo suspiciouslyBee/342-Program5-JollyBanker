@@ -13,10 +13,12 @@
 
 using namespace std;
 
+
+
 class Client {
   public:
     Client();
-    Client(const int &ID, const string name[]);
+    Client(const int &ID, vector<string> Name);
 
     vector<Transaction> history_;
 
@@ -29,11 +31,15 @@ class Client {
     int Withdrawal(const int &money, const int &fundID);
     int Deposit(const int &money, const int &fundID);
 
+    int ID();
+
     bool InLocalFunds(const int &fundIndex);
     
     //simple concactinated name
     string Name();
 
+    Client *left_;
+    Client *right_;
     vector<string> SeperatedName();
 
   private:
@@ -45,6 +51,5 @@ class Client {
     
     string name_[2];
 
-    Client *left_;
-    Client *right_;
+
 };
