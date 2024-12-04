@@ -19,7 +19,7 @@ using namespace std;
 
 class Client {
   public:
-    Client();
+    //Client(); CLIENT MUST HAVE NAME AND ID
     Client(const int &ID, vector<string> Name);
 
    

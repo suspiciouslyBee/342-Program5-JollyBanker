@@ -17,27 +17,39 @@
 //all vals need to init nul or -1 (except id)
 class Transaction {
   public:
+
     Transaction();
-    ~Transaction();
+    Transaction(const char &instr, const int &srcID, const int &srcFund, 
+                const int &dstID, const int &dstFund, const int &amount);
+    Transaction(const Transaction &rhs);
+    //~Transaction();
 
-
-    char Instruction();
     void SetName(const vector<string> &name);
-    void Clear();
+    //void Clear();
     void Affirm(const bool &state);
-    int Amount();
-    int DstID();
-    int DstFund();
-    int SrcFund();
+
+    const char Instruction();
     const int SrcID();
-    int FundID();
+    const int DstID();
+    
+    const int Amount();
 
     vector<string> Name();
+
+    const int DstFund();
+    const int SrcFund();
+
+    const bool Success();
+   
+
+
 
     void Setup(const char &instr, const int &srcID, const int &srcFund, 
                 const int &dstID, const int &dstFund, const int &amount);
     //strings imply this is an open.
     void Setup(const int &ID, const vector<string> &name);
+
+    friend ostream& operator<<(ostream& out, const Transaction &rhs);
 
   private:
     char instruction_;
@@ -47,10 +59,15 @@ class Transaction {
 
     vector<string> name_;
 
-    FundType fund_;
+    //based around FundType
+    int dstFund_;
+    int srcFund_;
+
+    int amount_;   
 
     bool success_; //write/affirm once, needs to be copied to all iteraitons
+    bool successWritten_; 
 
 };
 
-ostream& operator<<(ostream& out, const Transaction &rhs);
+
