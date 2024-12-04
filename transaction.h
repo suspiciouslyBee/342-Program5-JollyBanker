@@ -10,6 +10,7 @@
 //Breaks
 
 #include "fund_type.h"
+#include <ostream>
 #include <string>
 
 
@@ -28,13 +29,11 @@ class Transaction {
     int DstID();
     int DstFund();
     int SrcFund();
-    int SrcID();
+    const int SrcID();
     int FundID();
 
     vector<string> Name();
 
-
-  
     void Setup(const char &instr, const int &srcID, const int &srcFund, 
                 const int &dstID, const int &dstFund, const int &amount);
     //strings imply this is an open.
@@ -53,3 +52,5 @@ class Transaction {
     bool success_; //write/affirm once, needs to be copied to all iteraitons
 
 };
+
+ostream& operator<<(ostream& out, const Transaction &rhs);

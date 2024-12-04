@@ -453,3 +453,16 @@ Client* BankTree::Find(const int &ID, Client* node) const {
 		return nullptr;
 	}
 
+void BankTree::PrintTree(Client* t, std::ostream& out) const {
+	if (t->left_) { //check here first
+		PrintTree(t->left_, out);
+	}
+
+	//we are now at the middle of the chain, the node cant continue to wait
+	out <<  << endl;
+
+	if (t->right_) {
+		PrintTree(t->right, out);
+	}
+}
+

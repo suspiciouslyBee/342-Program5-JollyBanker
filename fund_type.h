@@ -27,6 +27,16 @@ enum FundType {
   NUMBEROFFUNDS, //Abuses enum behavior to get item # (8 in this case)
 };
 
+vector<FundType> kOverdraftProtectionAccount = {
+  PRIMEMONEYMARKET,
+  MONEYMARKET,
+  SHORTTERMBOND,
+  LONGTERMBOND,
+  UNDEFINED,
+  UNDEFINED,
+  UNDEFINED,
+  UNDEFINED,
+};
 
 
 //corresponding global lookup table for fund names with index parity
@@ -40,7 +50,7 @@ vector<string> kFundNames = {
   "Capital Value",
   "Growth Equity",
   "Growth Index",
-}
+};
 
 
 #endif //FUNDTYPE_H_
