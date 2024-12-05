@@ -8,7 +8,6 @@
 
 #include <vector>
 #include <ostream>
-#include
 
 #include "transaction.h"
 #include "fund_type.h"
@@ -38,14 +37,14 @@ class Client {
     bool InLocalFunds(const int &fundIndex);
     
     //simple concactinated name
-    string Name();
+    const string Name();
 
     Client *left_;
     Client *right_;
     vector<string> SeperatedName();
 
-    ostream& ClientAudit();
-    void FundAudit();
+    ostream& PrintFund(ostream& out, const int &fund, const bool &showHistory);
+    friend ostream& operator<<(ostream& out, Client &rhs);
 
   private:
     int ID_;
@@ -56,8 +55,8 @@ class Client {
     //returns amt withdrawled or -1 if invalid
   
     //Vector of transaction history for a fund, by vector of funds
+    //so that each vector contains a list according to the id implicit
     vector<vector<Transaction>> history_;
     vector<string> name_;
-
-
 };
+

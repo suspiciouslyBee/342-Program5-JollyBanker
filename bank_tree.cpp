@@ -385,6 +385,10 @@ bool BankTree::MoveFunds(Transaction &rhs) {
   return false;
 }
 
+bool BankTree::AuditClient(const int &clientID) {
+  
+}
+
 bool BankTree::Insert(vector<string> name, const int &ID, Client *node) {
 	////
 	// check for match first, should return nullptr. if we dont have a 
@@ -459,10 +463,10 @@ void BankTree::PrintTree(Client* t, std::ostream& out) const {
 	}
 
 	//we are now at the middle of the chain, the node cant continue to wait
-	out <<  << endl;
+	out << *t << endl;
 
 	if (t->right_) {
-		PrintTree(t->right, out);
+		PrintTree(t->right_, out);
 	}
 }
 

@@ -5,11 +5,6 @@ vector<string> Client::SeperatedName() {
   return name_;
 }
 
-// this is going to be stupid.
-// go through each one, put into
-ostream& Client::ClientAudit() {
-
-}
 
 Client::Client(const int &ID, vector<string> name) {
   ID_ = ID;
@@ -27,7 +22,7 @@ void Client::AppendInstruction(Transaction &rhs)
   if(rhs.SrcID() == ID_) {
     history_.at(rhs.SrcFund()).push_back(rhs);
   }
-  
+
   if (rhs.DstID() == ID_) {
     history_.at(rhs.DstFund()).push_back(rhs);
   }
@@ -92,4 +87,42 @@ int Client::Deposit(const int &money, const int &fundID) {
 
 int Client::ID() {
   return ID_;
+}
+
+//TODO: need to make this use const. dont need to edit client instnace
+//just prints everything. friend funct
+//docs: start with name
+ostream& operator<<(ostream& out, Client &rhs) {
+  out << "Balances of Account #" << rhs.ID_ << ": " << rhs.Name() << endl;
+
+  //Loops through all funds
+  for(int i = 0; i < NUMBEROFFUNDS; i++) {
+    rhs.PrintFund(out, i, false);
+  }
+
+  out << endl;
+ 
+}
+
+
+//TODO, limit to funds that exist
+
+//stupid ass psuedo code because i cant think on the link with 3 hrs of sleep 
+//grab name of fund according to fund int
+ostream& Client::PrintFund(ostream& out, const int &fund, 
+                            const bool &showHistory) {
+  out << "\tFund: " << kFundNames.at(fund) << endl;
+  out << "\t\tTotal: " << localFunds_[fund] << "$" << endl;
+  out << "\t\tHistory:" << endl;
+
+  if(showHistory) {
+    for(int i = 0; i < history_.at(fund).size(); i++) {
+      out << "\t\t\t" << history_.at(fund).at(i) << endl;
+    }
+    out << endl;
+  }
+
+  out << endl;
+  return out;
+
 }
