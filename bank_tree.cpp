@@ -152,9 +152,12 @@ bool BankTree::MoveFunds(Transaction &rhs) {
   Client *dst = nullptr;
 
 
+  src = Find(rhs.SrcID(), src);
+  dst = Find(rhs.DstID(), dst);
+
   //Sanity Check: Do either nodes exist?
   //cannot log to a node if not found
-  if(!Find(rhs.SrcID(), src) && !Find(rhs.DstID(), dst)) {
+  if(!src && !dst) {
 
     cerr << "ERROR: Neither Account found. Both IDs cannot be invalid." 
           << "Money movement refused: \n";
@@ -385,8 +388,44 @@ bool BankTree::MoveFunds(Transaction &rhs) {
   return false;
 }
 
-bool BankTree::AuditClient(const int &clientID) {
-  
+
+//todo, print name for these
+
+bool BankTree::AuditClient(const int &clientID, ostream &out) {
+  //find the client
+
+  Client *result = nullptr;
+
+  result = Find(clientID, result);
+
+  // no match? bail! TODO: make print for missing thing
+  if(result == nullptr) { return false; }
+
+  for(int i = 0; i < NUMBEROFFUNDS; i++) {
+    result->PrintFund(out, i, true);
+  }
+
+  return true;
+}
+
+bool BankTree::AuditClient(const int &clientID, const int &fundID, 
+                            ostream &out) {
+  //find the client
+
+  Client *result = nullptr;
+
+  result = Find(clientID, result);
+
+  // no match? bail! TODO: make print for missing thing
+  if(result == nullptr) { return false; }
+
+  if(result->InLocalFunds(fundID)) {
+    result->PrintFund(out, fundID, true);
+    return true;
+  }
+
+  return false;
+
 }
 
 bool BankTree::Insert(vector<string> name, const int &ID, Client *node) {

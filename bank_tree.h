@@ -44,8 +44,8 @@ class BankTree {
     bool MoveFunds(Transaction &rhs);
 
     //special bst manip
-    bool AuditClient(const int &clientID);
-    bool AuditClient(const int &clientID, const int &fundID);
+    bool AuditClient(const int &clientID, ostream &out);
+    bool AuditClient(const int &clientID, const int &fundID, ostream &out);
 
     //bst manip
     //bool Contains(const int &clientID, Client *&account);
