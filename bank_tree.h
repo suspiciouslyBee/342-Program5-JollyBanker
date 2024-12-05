@@ -53,7 +53,7 @@ class BankTree {
     Client* Find(const int &ID, Client *node) const;
     void PrintTree(Client* t, ostream& out) const;
 
-
+    friend ostream& operator<<(ostream& out, BankTree &rhs);
   private:
 
     

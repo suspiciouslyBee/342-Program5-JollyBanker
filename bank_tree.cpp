@@ -391,7 +391,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
 //todo, print name for these
 
-bool BankTree::AuditClient(const int &clientID, ostream &out) {
+bool BankTree::AuditClient(const int &clientID, ostream &out = cout) {
   //find the client
 
   Client *result = nullptr;
@@ -409,7 +409,7 @@ bool BankTree::AuditClient(const int &clientID, ostream &out) {
 }
 
 bool BankTree::AuditClient(const int &clientID, const int &fundID, 
-                            ostream &out) {
+                            ostream &out = cout) {
   //find the client
 
   Client *result = nullptr;
@@ -509,3 +509,8 @@ void BankTree::PrintTree(Client* t, std::ostream& out) const {
 	}
 }
 
+ostream& operator<<(ostream& out, BankTree &rhs) {
+  Client *dummy = nullptr;
+  rhs.PrintTree(dummy, out);
+  return out;
+}
