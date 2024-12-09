@@ -37,7 +37,7 @@ class Client {
     bool InLocalFunds(const int &fundIndex);
     
     //simple concactinated name
-    const string Name();
+    string Name();
 
     Client *left_;
     Client *right_;

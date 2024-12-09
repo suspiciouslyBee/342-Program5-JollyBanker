@@ -34,7 +34,7 @@ bool Client::InLocalFunds(const int &fundID) {
   return (fundID < 0) || (fundID > NUMBEROFFUNDS);
 }
 
-string Client::Name() {
+string Client::Name(){
   string answer;
   for(int i = 0; i < name_.size(); i++) {
     answer += " " + name_[i];

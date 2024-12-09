@@ -25,8 +25,11 @@ class Transaction {
     //~Transaction();
 
     void SetName(const vector<string> &name);
-    //void Clear();
+    //TODO: make a check for this to not overwrite read-only state
+    void Clear();
     void Affirm(const bool &state);
+
+    
 
     const char Instruction();
     const int SrcID();

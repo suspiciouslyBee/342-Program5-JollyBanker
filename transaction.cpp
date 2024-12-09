@@ -39,6 +39,18 @@ void Transaction::SetName(const vector<string> &name) {
   name_ = name;
 }
 
+void Transaction::Clear()
+{
+  instruction_ = '\0';
+  srcID_ = -1;
+  dstID_ = -1;
+  dstFund_ = UNDEFINED;
+  srcFund_ = UNDEFINED;
+  amount_ = -1;
+  success_ = false;
+  successWritten_ = false;
+}
+
 void Transaction::Affirm(const bool &state)
 {
   if(!successWritten_) {

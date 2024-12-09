@@ -130,7 +130,7 @@ bool BankTree::ExecuteTransaction(Transaction &rhs) {
     case 'A':
       return AuditClient(rhs.SrcID());
     case 'F':
-      return AuditClient(rhs.SrcID(), rhs.FundID());
+      return AuditClient(rhs.SrcID(), rhs.SrcFund());
     default:
       return false;
   }
