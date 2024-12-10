@@ -3,68 +3,66 @@
 //
 //  Author: June
 //
-//  Description: Main database for Data tree
+//  Description: Main database for Bank Data tree with support for 
+//  semi-automated client creation and limited client fund management
+//  
+//  See design document for more information
+//  
 ////
 
 #ifndef BANKTREE_H_
 #define BANKTREE_H_
 
-
 #include <iostream>
 #include <ostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <queue>
 
 #include "fund_type.h"
 #include "transaction.h"
 #include "client.h"
 
-using namespace std;
 
 class BankTree {
   public:
     BankTree();
-    //BankTree(const BankTree &rhs);
-    BankTree(string &fileName); //Autoruns Build & execute
-    //~BankTree();
+    BankTree(std::string &fileName); //Autoruns Build & execute
 
-    //  queue manip
+    //queue manip
     void ClearQueue();
-    bool BuildQueue(string &fileName);
+    bool BuildQueue(std::string &fileName);
     bool ExecuteQueue();
 
-
-
-    //need to keep in mind: transfer is essentially a
-    // withdrawl and then a deposit.
-
-    //transaction manip
+    //Wrappers 
     bool ExecuteTransaction(Transaction &rhs);
     bool CreateClient(Transaction &item);
+
+    //Abstractedtransaction manip
     bool MoveFunds(Transaction &rhs);
 
     //special bst manip
-    bool AuditClient(const int &clientID, ostream &out = cout);
+    bool AuditClient(const int &clientID, std::ostream &out = std::cout);
     bool AuditClient(const int &clientID, const int &fundID, 
-                      ostream &out = cout);
+                      std::ostream &out = std::cout);
 
     //bst manip
     //bool Contains(const int &clientID, Client *&account);
-    bool Insert(vector<string> name, const int &ID, Client *node);
+    bool Insert(std::vector<std::string> name, const int &ID, Client *node);
     Client* Find(const int &ID, Client *node) const;
-    void PrintTree(Client* t, ostream& out) const;
+    void PrintTree(Client* t, std::ostream& out) const;
 
-    friend ostream& operator<<(ostream& out, BankTree &rhs);
+    friend std::ostream& operator<<(std::ostream& out, BankTree &rhs);
   private:
 
     
 
     int count;
     Client *root_;
-    queue<Transaction> transactionQueue_;  
+    std::queue<Transaction> transactionQueue_;  
 };
 
 
-ostream& operator<<(ostream& out, BankTree &rhs);
+std::ostream& operator<<(std::ostream& out, BankTree &rhs);
 #endif //BANKTREE_H_

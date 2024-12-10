@@ -1,4 +1,9 @@
+//Stub header for Implementation for BankTree
+
+#include "bank_tree.h"
+
 #include <iostream>
+#include <ostream>
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -7,9 +12,6 @@
 #include "fund_type.h"
 #include "transaction.h"
 #include "client.h"
-#include "bank_tree.h"
-
-using namespace std;
 
 BankTree::BankTree()
 {
@@ -17,7 +19,7 @@ BankTree::BankTree()
   root_ = nullptr;
 }
 
-BankTree::BankTree(string &fileName)
+BankTree::BankTree(std::string &fileName)
 {
   count = 0;
   root_ = nullptr;
@@ -40,18 +42,23 @@ void BankTree::ClearQueue()
 }
 
 // Open File
-bool BankTree::BuildQueue(string &fileName) {
+bool BankTree::BuildQueue(std::string &fileName) {
 
   //open file, if cant then bail
-  ifstream file(fileName);
+  std::ifstream file(fileName);
+
+  if(file.fail()) {
+    std::cerr << "ERROR: File not Found!" << std::endl;
+    return false;
+  }
 
 
   //parse each line, create new object. push to queue
   char instr = 0;
   int otherData[5] = {-1};
-  string hopper;
-  string nameHopper[2];
-  stringstream parser;
+  std::string hopper;
+  std::string nameHopper[2];
+  std::stringstream parser;
   Transaction transactionHopper;  //should be fresh and not need clearing first
 
   //load lines sucessively
@@ -67,7 +74,7 @@ bool BankTree::BuildQueue(string &fileName) {
 
     //Parses int because all args have second int (an id)
     parser >> otherData[0];
-    vector<string> fullName;
+    std::vector<std::string> fullName;
 
     //Special split here if the data is an O
     //load the data otherwise.
@@ -95,12 +102,12 @@ bool BankTree::BuildQueue(string &fileName) {
         transactionHopper.Setup(otherData[0], fullName);
         break;
       case 'D':
-        transactionHopper.Setup(instr, -1, UNDEFINED, otherData[0], 
+        transactionHopper.Setup(instr, -1, kUndefined, otherData[0], 
                                 otherData[1], otherData[2]);
         break;
       case 'W':
         transactionHopper.Setup(instr, otherData[0], otherData[1], -1, 
-                                UNDEFINED, otherData[2]);
+                                kUndefined, otherData[2]);
         break;
       case 'T':
         transactionHopper.Setup(instr, otherData[0], otherData[1], otherData[2],
@@ -171,8 +178,8 @@ bool BankTree::CreateClient(Transaction &rhs) {
 
     return true; 
   }
-  cerr << "Account #" << rhs.SrcID() << " already exists. "
-       << "Transaction Refused." << endl;
+  std::cerr << "Account #" << rhs.SrcID() << " already exists. "
+       << "Transaction Refused." << std::endl;
   return false;
 }
 
@@ -193,40 +200,40 @@ bool BankTree::MoveFunds(Transaction &rhs) {
   //cannot log to a node if not found
   if(!src && !dst) {
 
-    cerr << "ERROR: Neither Account found. Both IDs cannot be invalid." 
-          << "Money movement refused: \n";
+    std::cerr << "ERROR: Neither Account found. Both IDs cannot be invalid." 
+          << "Money movement transaction refused: \n";
 
-    cerr << "srcID: ";
+    std::cerr << "srcID: ";
     if(rhs.SrcID() == -1) {
-      cerr << "Placeholder Deposit ID -1\n";
+      std::cerr << "Placeholder Deposit ID -1\n";
     } else {
-      cerr << rhs.SrcID() << endl;
+      std::cerr << rhs.SrcID() << std::endl;
     }
 
-    cerr << "srcID: ";
+    std::cerr << "srcID: ";
     if(rhs.DstID() == -1) {
-      cerr << "Placeholder Withdrawl ID -1\n";
+      std::cerr << "Placeholder Withdrawl ID -1\n";
     } else {
-      cerr << rhs.DstID() << endl;
+      std::cerr << rhs.DstID() << std::endl;
     }
     
-    cerr << endl;
+    std::cerr << std::endl;
     return false;
   }
 
 
   if(rhs.Amount() < 0) {
-    cerr << "ERROR: Transaction amount (" << rhs.Amount() 
-          << ") cannot be negative Money movement refused: \n";
+    std::cerr << "ERROR: Transaction amount (" << rhs.Amount() 
+          << ") cannot be negative. Money Movement Transaction refused. \n";
 
     rhs.Affirm(false);
 
     if(src) {
-      src->AppendInstruction(rhs);
+      src->AppendTransaction(rhs);
     }
 
     if(dst) {
-      dst->AppendInstruction(rhs);
+      dst->AppendTransaction(rhs);
     }
 
     return false;
@@ -249,26 +256,26 @@ bool BankTree::MoveFunds(Transaction &rhs) {
         }
 
         rhs.Affirm(false);
-        errorTgt->AppendInstruction(rhs);
+        errorTgt->AppendTransaction(rhs);
 
-        cerr << "ERROR: Both Accounts not found. Transfer needs two valid IDs. " 
+        std::cerr << "ERROR: Both Accounts not found. Transfer needs two valid IDs. " 
               << "Transferal refused: \n";
 
-        cerr << "srcID: ";
+        std::cerr << "srcID: ";
         if(rhs.SrcID() == -1) {
-         cerr << "Placeholder Deposit ID -1\n";
+         std::cerr << "Placeholder Deposit ID -1\n";
         } else {
-        cerr << rhs.SrcID() << "  ";
+        std::cerr << rhs.SrcID() << "  ";
         }
 
-        cerr << "dstID: ";
+        std::cerr << "dstID: ";
         if(rhs.DstID() == -1) {
-          cerr << "Placeholder Withdrawl ID -1\n";
+          std::cerr << "Placeholder Withdrawl ID -1\n";
         } else {
-          cerr << rhs.DstID() << endl;
+          std::cerr << rhs.DstID() << std::endl;
         }
     
-        cerr << endl;
+        std::cerr << std::endl;
 
         return false;
       }
@@ -278,56 +285,49 @@ bool BankTree::MoveFunds(Transaction &rhs) {
       //Sanity Check: do the funds exist
       if(!src->InLocalFunds(rhs.SrcFund()) || !dst->InLocalFunds(rhs.DstFund()))
       {
-        cerr << "ERROR: Movement to invalid fund. Transferal refused: \n";
+        std::cerr << "ERROR: Movement to invalid fund. Transferal refused: \n";
 
-        cerr << "Source Fund: ";
+        std::cerr << "Source Fund: ";
         if(src->InLocalFunds(rhs.SrcFund())) {
-          cerr << kFundNames.at(rhs.SrcFund()) << endl;
+          std::cerr << kFundNames.at(rhs.SrcFund()) << std::endl;
         } else {
-          cerr << rhs.SrcFund() << endl;
+          std::cerr << rhs.SrcFund() << std::endl;
         }
 
-        cerr << "Destination Fund: ";
+        std::cerr << "Destination Fund: ";
         if(dst->InLocalFunds(rhs.DstFund())) {
-          cerr << kFundNames.at(rhs.DstFund());
+          std::cerr << kFundNames.at(rhs.DstFund());
         } else {
-          cerr << rhs.DstFund() << endl;
+          std::cerr << rhs.DstFund() << std::endl;
         }
     
-        cerr << endl;
+        std::cerr << std::endl;
 
         rhs.Affirm(false);
-
-        if(src != dst) {
-          dst->AppendInstruction(rhs);
-        }
-        src->AppendInstruction(rhs);
-
-        return false;
       }
 
 
-      if(src->Withdrawal(rhs.Amount(), rhs.SrcFund()) < 0) {
-        cerr << "ERROR: Insufficient funds from  " 
+      if(src->Withdrawl(rhs.Amount(), rhs.SrcFund()) < 0) {
+        std::cerr << "ERROR: Insufficient funds from  " 
           << kFundNames.at(rhs.SrcFund()) << " at Account # " << rhs.SrcID()
-          << ", Owner: " << src->Name() << endl;
+          << ", Owner: " << src->Name() << " Transferral Refused." << std::endl;
         rhs.Affirm(false);
-        if(src != dst) {
-          dst->AppendInstruction(rhs);
-        }
-        src->AppendInstruction(rhs);
-        return false;
+
+      }
+      
+      //Due to program flow, if the flag is not set to read only by now then
+      //dst is VALID, amount is VALID, DstFund is VALID.
+      
+      if(!rhs.isAffirmed()) {
+        dst->Deposit(rhs.Amount(), rhs.DstFund());
+        rhs.Affirm(true);
       }
 
-      //By now, dst is VALID, amount is VALID, DstFund is VALID. Assumption time
-      dst->Deposit(rhs.Amount(), rhs.DstFund());
-
-      rhs.Affirm(true);
       if(src != dst) {
-        dst->AppendInstruction(rhs);
+        dst->AppendTransaction(rhs);
       }
-      src->AppendInstruction(rhs);
-      return true;
+      src->AppendTransaction(rhs);
+      return rhs.Success();
       break;
     case 'W':
 
@@ -335,13 +335,13 @@ bool BankTree::MoveFunds(Transaction &rhs) {
       if(src == nullptr) { 
         rhs.Affirm(false);
 
-        cerr << "ERROR: Account not found. Withdrawal refused: \n";
+        std::cerr << "ERROR: Account not found. Withdrawl refused: \n";
 
-        cerr << "srcID: ";
+        std::cerr << "srcID: ";
         if(rhs.SrcID() == -1) {
-         cerr << "Placeholder Deposit ID -1\n";
+         std::cerr << "Placeholder Deposit ID -1\n";
         } else {
-        cerr << rhs.SrcID() << endl;
+        std::cerr << rhs.SrcID() << std::endl;
         }
         return false;
       }
@@ -350,35 +350,35 @@ bool BankTree::MoveFunds(Transaction &rhs) {
       //Sanity Check: does the fund exist
       if(!src->InLocalFunds(rhs.SrcFund()))
       {
-        cerr << "ERROR: Movement to invalid fund. Withdrawal refused: \n";
+        std::cerr << "ERROR: Movement to invalid fund. Withdrawl refused: \n";
 
-        cerr << "Source Fund: ";
+        std::cerr << "Source Fund: ";
         if(src->InLocalFunds(rhs.SrcFund())) {
-          cerr << kFundNames.at(rhs.SrcFund()) << endl;
+          std::cerr << kFundNames.at(rhs.SrcFund()) << std::endl;
         } else {
-          cerr << rhs.SrcFund() << endl;
+          std::cerr << rhs.SrcFund() << std::endl;
         }
     
-        cerr << endl;
+        std::cerr << std::endl;
         rhs.Affirm(true);
-        src->AppendInstruction(rhs);
+        src->AppendTransaction(rhs);
 
         return false;
       }
 
 
-      if(src->Withdrawal(rhs.Amount(), rhs.SrcFund()) < 0) {
-        cerr << "ERROR: Insufficient funds from  " 
+      if(src->Withdrawl(rhs.Amount(), rhs.SrcFund()) < 0) {
+        std::cerr << "ERROR: Insufficient funds from  " 
           << kFundNames.at(rhs.SrcFund()) << " at Account # " << rhs.SrcID()
-          << ", Owner: " << src->Name() << endl;
+          << ", Owner: " << src->Name() << " Withdrawl Refused." << std::endl;
         rhs.Affirm(false);
-        src->AppendInstruction(rhs);
+        src->AppendTransaction(rhs);
         return false;
       }
 
 
       rhs.Affirm(true);
-      src->AppendInstruction(rhs);
+      src->AppendTransaction(rhs);
       return true;
       break;
     case 'D':
@@ -388,31 +388,31 @@ bool BankTree::MoveFunds(Transaction &rhs) {
       if(dst == nullptr) { 
         rhs.Affirm(false);
     
-        cerr << "ERROR: Account not found. Deposit refused: \n";
+        std::cerr << "ERROR: Account not found. Deposit refused: \n";
 
-        cerr << "dstID: ";
+        std::cerr << "dstID: ";
         if(rhs.DstID() == -1) {
-         cerr << "Placeholder Deposit ID -1\n";
+         std::cerr << "Placeholder Deposit ID -1\n";
         } else {
-        cerr << rhs.DstID() << endl;
+        std::cerr << rhs.DstID() << std::endl;
         }
         return false;
       }
 
       if(!dst->InLocalFunds(rhs.DstFund())) {
-        cerr << "ERROR: Deposit to invalid fund. Deposit refused: \n";
+        std::cerr << "ERROR: Deposit to invalid fund. Deposit refused: \n";
 
-        cerr << "Destination Fund: ";
+        std::cerr << "Destination Fund: ";
         if(dst->InLocalFunds(rhs.DstFund())) {
-          cerr << kFundNames.at(rhs.DstFund());
+          std::cerr << kFundNames.at(rhs.DstFund());
         } else {
-          cerr << rhs.DstFund() << endl;
+          std::cerr << rhs.DstFund() << std::endl;
         }
     
-        cerr << endl;
+        std::cerr << std::endl;
 
         rhs.Affirm(false);
-        dst->AppendInstruction(rhs);
+        dst->AppendTransaction(rhs);
 
         return false;
       }
@@ -420,19 +420,19 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
       dst->Deposit(rhs.Amount(), rhs.DstFund());
       rhs.Affirm(true);
-      dst->AppendInstruction(rhs);
+      dst->AppendTransaction(rhs);
       return true;
       break;
   }
 
-  cerr << "ERROR: UNKNOWN ERROR" << endl;
+  std::cerr << "ERROR: UNKNOWN ERROR" << std::endl;
   return false;
 }
 
 
 //todo, print name for these
 
-bool BankTree::AuditClient(const int &clientID, ostream &out) {
+bool BankTree::AuditClient(const int &clientID, std::ostream &out) {
   //find the client
 
   Client *result = root_;
@@ -443,17 +443,17 @@ bool BankTree::AuditClient(const int &clientID, ostream &out) {
   if(result == nullptr) { return false; }
 
   out << "General Audit of Account #" << result->ID() << ", Owner: " 
-      << result->Name() << endl;
+      << result->Name() << std::endl;
 
-  for(int i = 0; i < NUMBEROFFUNDS; i++) {
+  for(int i = 0; i < kNumberOfFunds; i++) {
     result->PrintFund(out, i, true);
   }
-  out << endl;
+  out << std::endl;
   return true;
 }
 
 bool BankTree::AuditClient(const int &clientID, const int &fundID, 
-                          ostream &out) {
+                          std::ostream &out) {
   //find the client
 
   Client *result = nullptr;
@@ -467,9 +467,9 @@ bool BankTree::AuditClient(const int &clientID, const int &fundID,
 
   if(result->InLocalFunds(fundID)) {
     out << "Targeted Fund Audit of Account #" << result->ID() << ". Owner: " 
-        << result->Name() << endl;
+        << result->Name() << std::endl;
     result->PrintFund(out, fundID, true);
-    out << endl;
+    out << std::endl;
     return true;
   }
 
@@ -477,7 +477,8 @@ bool BankTree::AuditClient(const int &clientID, const int &fundID,
 
 }
 
-bool BankTree::Insert(vector<string> name, const int &ID, Client *node) {
+bool BankTree::Insert(std::vector<std::string> name, const int &ID, 
+                Client *node) {
 	////
 	// check for match first, should return nullptr. if we dont have a 
 	// nullptr that means a match was found
@@ -554,14 +555,14 @@ void BankTree::PrintTree(Client* t, std::ostream& out) const {
 	}
 
 	//we are now at the middle of the chain, the node cant continue to wait
-	out << *t << endl;
+	out << *t << std::endl;
 
 	if (t->right_) {
 		PrintTree(t->right_, out);
 	}
 }
 
-ostream& operator<<(ostream& out, BankTree &rhs) {
+std::ostream& operator<<(std::ostream& out, BankTree &rhs) {
   Client *dummy = rhs.root_;
   rhs.PrintTree(dummy, out);
   return out;

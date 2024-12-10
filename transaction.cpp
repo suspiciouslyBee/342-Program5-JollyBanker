@@ -1,18 +1,19 @@
-
+//Stub header for transaction implementation
 
 #include "transaction.h"
+
 #include <vector>
+#include <ostream>
 #include <string>
 
-using namespace std;
-
+#include "fund_type.h"
 
 Transaction::Transaction() {
   instruction_ = '\0';
   srcID_ = -1;
   dstID_ = -1;
-  dstFund_ = UNDEFINED;
-  srcFund_ = UNDEFINED;
+  dstFund_ = kUndefined;
+  srcFund_ = kUndefined;
   amount_ = -1;
   success_ = false;
   successWritten_ = false;
@@ -38,7 +39,7 @@ Transaction::Transaction(const Transaction &rhs) {
   successWritten_ = rhs.successWritten_;
 }
 
-void Transaction::SetName(const vector<string> &name) {
+void Transaction::SetName(const std::vector<std::string> &name) {
   name_ = name;
 }
 
@@ -47,8 +48,8 @@ void Transaction::Clear()
   instruction_ = '\0';
   srcID_ = -1;
   dstID_ = -1;
-  dstFund_ = UNDEFINED;
-  srcFund_ = UNDEFINED;
+  dstFund_ = kUndefined;
+  srcFund_ = kUndefined;
   amount_ = -1;
   success_ = false;
   successWritten_ = false;
@@ -78,7 +79,7 @@ int Transaction::Amount() const {
   return amount_;
 }
 
-vector<string> Transaction::Name() {
+std::vector<std::string> Transaction::Name() {
   return name_;
 }
 
@@ -88,6 +89,10 @@ int Transaction::SrcFund() const {
 
 bool Transaction::Success() const {
   return success_;
+}
+
+bool Transaction::isAffirmed() const {
+  return successWritten_;
 }
 
 void Transaction::Setup(const char &instr, const int &srcID, const int &srcFund,
@@ -101,7 +106,7 @@ void Transaction::Setup(const char &instr, const int &srcID, const int &srcFund,
   amount_ = amount;   
 }
 
-void Transaction::Setup(const int &ID, const vector<string> &name) {
+void Transaction::Setup(const int &ID, const std::vector<std::string> &name) {
   instruction_ = 'O';
   name_ = name;
   srcID_ = ID;
@@ -113,7 +118,7 @@ int Transaction::DstFund() const {
 
 
 //friend op
-ostream &operator<<(ostream &out, const Transaction &rhs) {
+std::ostream &operator<<(std::ostream &out, const Transaction &rhs) {
 
   bool dontBreak = false;
   out << rhs.instruction_ << " ";

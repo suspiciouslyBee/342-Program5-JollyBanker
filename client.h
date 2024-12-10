@@ -3,64 +3,73 @@
 //
 //  Author: June
 //
-//  Description: Holds client data and the linked list history
+//  Description: Holds client data and transaction history as an even "smarter"
+//  struct than the Transaction Class. Acts as a binary node for the Bank Tree.
+//  Basic Withdrawls, deposits are implemented here but more complex tasks
+//  such as transfers are handled by the higher context (Bank Tree)
+//
+//  INTENDED TO BE COMPOSED INTO BANK_TREE.
 ////
 
 #ifndef CLIENT_H_
 #define CLIENT_H_
 
 #include <vector>
+#include <iostream>
 #include <ostream>
 
 #include "transaction.h"
 #include "fund_type.h"
 
-using namespace std;
 
 //note to self need to init to number of elements
 
 class Client {
   public:
     //Client(); CLIENT MUST HAVE NAME AND ID
-    Client(const int &ID, vector<string> Name);
+    Client(const int &ID, std::vector<std::string> Name);
 
    
+    //Logs transaction history
+    void AppendTransaction(Transaction &rhs);
 
-    void AppendInstruction(Transaction &rhs);
-
-    //if the return matches input, the instruction was valid
-    //special error returns
-    //-1 : insufficient funds
-    //-2 : invalid format! doesnt exist!
-    int Withdrawal(const int &money, const int &fundID);
+    //If the return matches input, the instruction was valid
+    //Accepts only positive ints.
+    //Error Return
+    //-2 : error, money unchanged
+    int Withdrawl(const int &money, const int &fundID);
     int Deposit(const int &money, const int &fundID);
 
-    int ID();
+    int ID() const;
 
-    bool InLocalFunds(const int &fundIndex);
+    bool InLocalFunds(const int &fundIndex) const;
     
     //simple concactinated name
-    string Name();
+    std::string Name() const;
 
+    
+    std::vector<std::string> SeperatedName() const;
+
+    std::ostream& PrintFund(std::ostream& out, const int &fund, 
+                        const bool &showHistory) const;
+    friend std::ostream& operator<<(std::ostream& out, Client &rhs);
+
+    //These are "public" but should still be inaccessable due to the node itself
+    //being intended to be a private data member to BankTree
     Client *left_;
     Client *right_;
-    vector<string> SeperatedName();
-
-    ostream& PrintFund(ostream& out, const int &fund, const bool &showHistory);
-    friend ostream& operator<<(ostream& out, Client &rhs);
-
   private:
     int ID_;
 
     
     int localFunds_[8] = {0}; //hardcoded size for now
 
-    //returns amt withdrawled or -1 if invalid
+    
   
     //Vector of transaction history for a fund, by vector of funds
     //so that each vector contains a list according to the id implicit
-    vector<vector<Transaction>> history_;
-    vector<string> name_;
+    std::vector<std::vector<Transaction>> history_;
+    std::vector<std::string> name_;
 };
 
 #endif //CLIENT_H_

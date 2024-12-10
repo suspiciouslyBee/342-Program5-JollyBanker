@@ -10,16 +10,6 @@
 ////
 
 
-
-/*#include <utility>
-
-
-//imply the id by fixed pos
-vector<pair<string, int>> kFundTypes = {
-  {"Money Market", 0},
-};
-*/
-
 #ifndef FUNDTYPE_H_
 #define FUNDTYPE_H_
 
@@ -27,29 +17,29 @@ vector<pair<string, int>> kFundTypes = {
 #include <string>
 
 enum FundType {
-  UNDEFINED = -1,
-  MONEYMARKET, //MM can pull from each other
-  PRIMEMONEYMARKET, 
-  LONGTERMBOND, //Bonds can pull from each other
-  SHORTTERMBOND,
-  TOP500INDEX,
-  CAPITALVALUE,
-  GROWTHEQUITY,
-  GROWTHINDEX,  //Insert additional funds after this entry as needed
-  NUMBEROFFUNDS, //Abuses enum behavior to get item # (8 in this case)
+  kUndefined = -1,
+  kMoneyMarket, //MM can pull from each other
+  kPrimeMoneyMarket, 
+  kLongTermBond, //Bonds can pull from each other
+  kShortTermBond,
+  kTop500Index,
+  kCapitalValue,
+  kGrowthEquity,
+  kGrowthIndex,  //Insert additional funds after this entry as needed
+  kNumberOfFunds, //Abuses enum behavior to get item # (8 in this case)
 };
 
 
 //TODO: make this constant
 inline const std::vector<FundType> kOverdraftProtectionAccount = {
-  PRIMEMONEYMARKET,
-  MONEYMARKET,
-  SHORTTERMBOND,
-  LONGTERMBOND,
-  UNDEFINED,
-  UNDEFINED,
-  UNDEFINED,
-  UNDEFINED,
+  kPrimeMoneyMarket,
+  kMoneyMarket,
+  kShortTermBond,
+  kLongTermBond,
+  kUndefined,
+  kUndefined,
+  kUndefined,
+  kUndefined,
 };
 
 
