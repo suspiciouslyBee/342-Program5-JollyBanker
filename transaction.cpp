@@ -28,6 +28,7 @@ Transaction::Transaction(const char &instr, const int &srcID,
 
 Transaction::Transaction(const Transaction &rhs) {
   instruction_ = rhs.instruction_;
+  name_ = rhs.name_;
   srcID_ = rhs.srcID_;
   dstID_ = rhs.dstID_;
   dstFund_ = rhs.dstFund_;
@@ -119,10 +120,10 @@ ostream &operator<<(ostream &out, const Transaction &rhs) {
   switch(rhs.instruction_) {
     case 'T':
       dontBreak = true;
-    case 'D':
+    case 'W':
       out << rhs.srcID_ << " " << rhs.srcFund_ << " ";
       if(!dontBreak) { break; }
-    case 'W':
+    case 'D':
       out << rhs.dstID_ << " " << rhs.dstFund_ << " ";
       break;
     default:

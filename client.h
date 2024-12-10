@@ -53,7 +53,7 @@ class Client {
     int ID_;
 
     
-    int localFunds_[8]; //hardcoded size for now
+    int localFunds_[8] = {0}; //hardcoded size for now
 
     //returns amt withdrawled or -1 if invalid
   

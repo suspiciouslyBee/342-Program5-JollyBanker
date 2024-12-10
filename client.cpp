@@ -11,7 +11,7 @@ Client::Client(const int &ID, vector<string> name) {
   name_ = name;
   right_ = nullptr;
   left_ = nullptr;
-  int localFunds_ = {0};
+  history_.resize(NUMBEROFFUNDS);
 }
 
 void Client::AppendInstruction(Transaction &rhs)
@@ -31,7 +31,7 @@ void Client::AppendInstruction(Transaction &rhs)
 }
 
 bool Client::InLocalFunds(const int &fundID) {
-  return (fundID < 0) || (fundID > NUMBEROFFUNDS);
+  return (fundID > 0) || (fundID < NUMBEROFFUNDS);
 }
 
 string Client::Name(){
@@ -93,7 +93,7 @@ int Client::ID() {
 //just prints everything. friend funct
 //docs: start with name
 ostream& operator<<(ostream& out, Client &rhs) {
-  out << "Balances of Account #" << rhs.ID_ << ": " << rhs.Name() << endl;
+  
 
   //Loops through all funds
   for(int i = 0; i < NUMBEROFFUNDS; i++) {
@@ -111,17 +111,18 @@ ostream& operator<<(ostream& out, Client &rhs) {
 //grab name of fund according to fund int
 ostream& Client::PrintFund(ostream& out, const int &fund, 
                             const bool &showHistory) {
+  
+  if(history_.at(fund).size() < 1) { return out; }
+
   out << "\tFund: " << kFundNames.at(fund) << endl;
   out << "\t\tTotal: " << localFunds_[fund] << "$" << endl;
   out << "\t\tHistory:" << endl;
 
   if(showHistory) {
     for(int i = 0; i < history_.at(fund).size(); i++) {
-      out << "\t\t\t" << history_.at(fund).at(i) << endl;
+      out << "\t\t  " << history_.at(fund).at(i) << endl;
     }
-    out << endl;
   }
-
   out << endl;
   return out;
 

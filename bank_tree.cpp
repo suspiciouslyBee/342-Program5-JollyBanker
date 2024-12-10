@@ -75,8 +75,8 @@ bool BankTree::BuildQueue(string &fileName) {
       parser >> nameHopper[0];
       parser >> nameHopper[1];
       
-      fullName.push_back(nameHopper[0]);
       fullName.push_back(nameHopper[1]);
+      fullName.push_back(nameHopper[0]);
 
     } else {
       //Keeps parsing until it fails or reaches the max amount of vals
@@ -166,7 +166,7 @@ bool BankTree::ExecuteTransaction(Transaction &rhs) {
 
 //Wrapper for Insert, id must be pos.
 bool BankTree::CreateClient(Transaction &rhs) {
-  Client *dummy = nullptr;
+  Client *dummy = root_;
   if(Insert(rhs.Name(), rhs.SrcID(), dummy)) { return false; }
   return true;
 }
@@ -177,12 +177,12 @@ bool BankTree::MoveFunds(Transaction &rhs) {
   //ptr to clients, if one is not found, create a dummy
   //if both are not found, clean up, leaves
 
-  Client *src = nullptr;
-  Client *dst = nullptr;
+  Client *src = root_;
+  Client *dst = root_;
 
 
-  src = Find(rhs.SrcID(), src);
-  dst = Find(rhs.DstID(), dst);
+  src = Find(rhs.SrcID(), root_);
+  dst = Find(rhs.DstID(), root_);
 
   //Sanity Check: Do either nodes exist?
   //cannot log to a node if not found
@@ -387,7 +387,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
         return false;
       }
 
-      if(dst->InLocalFunds(rhs.DstFund())) {
+      if(!dst->InLocalFunds(rhs.DstFund())) {
         cerr << "ERROR: Deposit to invalid fund. Deposit refused: \n";
 
         cerr << "Destination Fund: ";
@@ -406,7 +406,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
       }
 
 
-      dst->Deposit(rhs.Amount(), rhs.DstID());
+      dst->Deposit(rhs.Amount(), rhs.DstFund());
       rhs.Affirm(true);
       dst->AppendInstruction(rhs);
       return true;
@@ -423,12 +423,15 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 bool BankTree::AuditClient(const int &clientID, ostream &out) {
   //find the client
 
-  Client *result = nullptr;
+  Client *result = root_;
 
   result = Find(clientID, result);
 
   // no match? bail! TODO: make print for missing thing
   if(result == nullptr) { return false; }
+
+  out << "General Audit of Account #" << result->ID() << ", Owner: " 
+      << result->Name() << endl;
 
   for(int i = 0; i < NUMBEROFFUNDS; i++) {
     result->PrintFund(out, i, true);
@@ -443,12 +446,16 @@ bool BankTree::AuditClient(const int &clientID, const int &fundID,
 
   Client *result = nullptr;
 
-  result = Find(clientID, result);
+  result = Find(clientID, root_);
 
   // no match? bail! TODO: make print for missing thing
   if(result == nullptr) { return false; }
 
+ 
+
   if(result->InLocalFunds(fundID)) {
+    out << "Targeted Fund Audit of Account #" << result->ID() << ". Owner: " 
+        << result->Name() << endl;
     result->PrintFund(out, fundID, true);
     return true;
   }
@@ -469,7 +476,10 @@ bool BankTree::Insert(vector<string> name, const int &ID, Client *node) {
     count++;
 		return true;
 	}
+
+
 	if (Find(ID, node) != nullptr) { return false; } //match
+
 	while (latch) {
 		if (ID > node->ID()) {
 			if (node->right_) {
@@ -539,7 +549,7 @@ void BankTree::PrintTree(Client* t, std::ostream& out) const {
 }
 
 ostream& operator<<(ostream& out, BankTree &rhs) {
-  Client *dummy = nullptr;
+  Client *dummy = rhs.root_;
   rhs.PrintTree(dummy, out);
   return out;
 }

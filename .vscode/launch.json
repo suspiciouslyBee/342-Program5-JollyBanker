@@ -25,7 +25,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${fileDirname}/jolly_banker",
-      "args": [],
+      "args": ["bank_trans_in.txt"],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",
       "environment": [],
