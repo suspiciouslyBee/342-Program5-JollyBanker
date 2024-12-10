@@ -9,6 +9,9 @@
 
 //Breaks
 
+#ifndef TRANSACTION_H_
+#define TRANSACITON_H_
+
 #include "fund_type.h"
 #include <ostream>
 #include <string>
@@ -73,4 +76,4 @@ class Transaction {
 
 };
 
-
+#endif //TRANSACTION_H_

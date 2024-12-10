@@ -6,6 +6,9 @@
 //  Description: Holds client data and the linked list history
 ////
 
+#ifndef CLIENT_H_
+#define CLIENT_H_
+
 #include <vector>
 #include <ostream>
 
@@ -60,3 +63,4 @@ class Client {
     vector<string> name_;
 };
 
+#endif //CLIENT_H_

@@ -24,9 +24,9 @@ using namespace std;
 class BankTree {
   public:
     BankTree();
-    BankTree(const BankTree &rhs);
+    //BankTree(const BankTree &rhs);
     BankTree(string &fileName); //Autoruns Build & execute
-    ~BankTree();
+    //~BankTree();
 
     //  queue manip
     void ClearQueue();

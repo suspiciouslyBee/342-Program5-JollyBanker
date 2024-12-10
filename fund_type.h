@@ -1,7 +1,13 @@
-// Centralized header for funds. 
-// As this is fixed, this should not be editble in run time as of this version
-
-//global lookup
+////
+//  File: Global Fund Types Header
+//
+//  Author: June
+//
+//  Description: This file is a collection of constants that are used by all
+//  functions associated with Bank_Tree.
+//
+//  TODO: make compliant with google c++ guidelines. embed into banktree itself
+////
 
 #ifndef FUNDTYPE_H_
 #define FUNDTYPE_H_
@@ -27,6 +33,8 @@ enum FundType {
   NUMBEROFFUNDS, //Abuses enum behavior to get item # (8 in this case)
 };
 
+
+//TODO: make this constant
 vector<FundType> kOverdraftProtectionAccount = {
   PRIMEMONEYMARKET,
   MONEYMARKET,
@@ -40,7 +48,7 @@ vector<FundType> kOverdraftProtectionAccount = {
 
 
 //corresponding global lookup table for fund names with index parity
-
+//TODO: make this constant
 vector<string> kFundNames = {
   "Money Market",
   "Prime Money Market",

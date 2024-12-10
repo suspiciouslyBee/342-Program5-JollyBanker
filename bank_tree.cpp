@@ -11,7 +11,35 @@
 
 using namespace std;
 
-//Open File
+BankTree::BankTree()
+{
+  count = 0;
+  root_ = nullptr;
+}
+
+BankTree::BankTree(string &fileName)
+{
+  count = 0;
+  root_ = nullptr;
+  BuildQueue(fileName);
+  ExecuteQueue();
+}
+
+/*
+BankTree::BankTree(const BankTree &rhs)
+{
+  count = 0;
+  root_ = nullptr;
+}
+*/
+void BankTree::ClearQueue()
+{
+  while(!transactionQueue_.empty()) {
+    transactionQueue_.pop();
+  }
+}
+
+// Open File
 bool BankTree::BuildQueue(string &fileName) {
 
   //open file, if cant then bail
