@@ -43,22 +43,24 @@ class BankTree {
     bool MoveFunds(Transaction &rhs);
 
     //special bst manip
-    bool AuditClient(const int &clientID, std::ostream &out = std::cout);
+    bool AuditClient(const int &clientID, std::ostream &out = std::cout) const;
     bool AuditClient(const int &clientID, const int &fundID, 
-                      std::ostream &out = std::cout);
+                      std::ostream &out = std::cout) const;
 
     //bst manip
-    //bool Contains(const int &clientID, Client *&account);
+    //deliberately makes a copy of the ptr arg for recursion
     bool Insert(std::vector<std::string> name, const int &ID, Client *node);
     Client* Find(const int &ID, Client *node) const;
     void PrintTree(Client* t, std::ostream& out) const;
 
     friend std::ostream& operator<<(std::ostream& out, BankTree &rhs);
+
+    int Size() const;
   private:
 
     
 
-    int count;
+    int count_;
     Client *root_;
     std::queue<Transaction> transactionQueue_;  
 };

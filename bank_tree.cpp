@@ -15,13 +15,13 @@
 
 BankTree::BankTree()
 {
-  count = 0;
+  count_ = 0;
   root_ = nullptr;
 }
 
 BankTree::BankTree(std::string &fileName)
 {
-  count = 0;
+  count_ = 0;
   root_ = nullptr;
   BuildQueue(fileName);
   ExecuteQueue();
@@ -231,7 +231,6 @@ bool BankTree::MoveFunds(Transaction &rhs) {
     if(src) {
       src->AppendTransaction(rhs);
     }
-
     if(dst) {
       dst->AppendTransaction(rhs);
     }
@@ -306,7 +305,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
         rhs.Affirm(false);
       }
 
-
+      //Try the withdrawl
       if(src->Withdrawl(rhs.Amount(), rhs.SrcFund()) < 0) {
         std::cerr << "ERROR: Insufficient funds from  " 
           << kFundNames.at(rhs.SrcFund()) << " at Account # " << rhs.SrcID()
@@ -366,7 +365,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
         return false;
       }
 
-
+      //Try the withdrawl
       if(src->Withdrawl(rhs.Amount(), rhs.SrcFund()) < 0) {
         std::cerr << "ERROR: Insufficient funds from  " 
           << kFundNames.at(rhs.SrcFund()) << " at Account # " << rhs.SrcID()
@@ -432,7 +431,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
 //todo, print name for these
 
-bool BankTree::AuditClient(const int &clientID, std::ostream &out) {
+bool BankTree::AuditClient(const int &clientID, std::ostream &out) const {
   //find the client
 
   Client *result = root_;
@@ -453,7 +452,7 @@ bool BankTree::AuditClient(const int &clientID, std::ostream &out) {
 }
 
 bool BankTree::AuditClient(const int &clientID, const int &fundID, 
-                          std::ostream &out) {
+                          std::ostream &out) const {
   //find the client
 
   Client *result = nullptr;
@@ -487,7 +486,7 @@ bool BankTree::Insert(std::vector<std::string> name, const int &ID,
 
 	if (root_ == nullptr) {
 		root_ = new Client(ID, name);
-    count++;
+    count_++;
 		return true;
 	}
 
@@ -501,7 +500,7 @@ bool BankTree::Insert(std::vector<std::string> name, const int &ID,
 			}
 			else {
 				node->right_ = new Client(ID, name);
-        count++;
+        count_++;
 				latch = false;
 			}
 		}
@@ -512,7 +511,7 @@ bool BankTree::Insert(std::vector<std::string> name, const int &ID,
 			}
 			else {
 				node->left_ = new Client(ID, name);
-        count++;
+        count_++;
 				latch = false;
 			}
 		}
@@ -554,12 +553,17 @@ void BankTree::PrintTree(Client* t, std::ostream& out) const {
 		PrintTree(t->left_, out);
 	}
 
-	//we are now at the middle of the chain, the node cant continue to wait
+	//Now at the middle of the chain, the node cant continue to wait
 	out << *t << std::endl;
 
 	if (t->right_) {
 		PrintTree(t->right_, out);
 	}
+}
+
+int BankTree::Size() const
+{
+  return count_;
 }
 
 std::ostream& operator<<(std::ostream& out, BankTree &rhs) {
