@@ -168,6 +168,7 @@ bool BankTree::ExecuteTransaction(Transaction &rhs) {
 bool BankTree::CreateClient(Transaction &rhs) {
   Client *dummy = nullptr;
   if(Insert(rhs.Name(), rhs.SrcID(), dummy)) { return false; }
+  return true;
 }
 
 
@@ -419,7 +420,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
 //todo, print name for these
 
-bool BankTree::AuditClient(const int &clientID, ostream &out = cout) {
+bool BankTree::AuditClient(const int &clientID, ostream &out) {
   //find the client
 
   Client *result = nullptr;
@@ -437,7 +438,7 @@ bool BankTree::AuditClient(const int &clientID, ostream &out = cout) {
 }
 
 bool BankTree::AuditClient(const int &clientID, const int &fundID, 
-                            ostream &out = cout) {
+                          ostream &out) {
   //find the client
 
   Client *result = nullptr;

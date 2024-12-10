@@ -12,17 +12,18 @@
 #include "client.h"
 #include "bank_tree.h"
 
-
 int main(int argc, char *argv[]) {
 
   BankTree dummy;
 
-  string argument = argv[1];
+  if(argc != 2) { return 1; }
+
+  std::string argument = argv[1];
 
   dummy.BuildQueue(argument);
   dummy.ExecuteQueue();
 
-  cout << dummy;
+  std::cout << dummy;
 
   return 0;
 }

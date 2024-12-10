@@ -101,7 +101,7 @@ ostream& operator<<(ostream& out, Client &rhs) {
   }
 
   out << endl;
- 
+  return out;
 }
 
 

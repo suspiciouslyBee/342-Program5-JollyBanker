@@ -9,8 +9,7 @@
 //  TODO: make compliant with google c++ guidelines. embed into banktree itself
 ////
 
-#ifndef FUNDTYPE_H_
-#define FUNDTYPE_H_
+
 
 /*#include <utility>
 
@@ -20,6 +19,13 @@ vector<pair<string, int>> kFundTypes = {
   {"Money Market", 0},
 };
 */
+
+#ifndef FUNDTYPE_H_
+#define FUNDTYPE_H_
+
+#include <vector>
+#include <string>
+
 enum FundType {
   UNDEFINED = -1,
   MONEYMARKET, //MM can pull from each other
@@ -35,7 +41,7 @@ enum FundType {
 
 
 //TODO: make this constant
-vector<FundType> kOverdraftProtectionAccount = {
+inline const std::vector<FundType> kOverdraftProtectionAccount = {
   PRIMEMONEYMARKET,
   MONEYMARKET,
   SHORTTERMBOND,
@@ -49,7 +55,7 @@ vector<FundType> kOverdraftProtectionAccount = {
 
 //corresponding global lookup table for fund names with index parity
 //TODO: make this constant
-vector<string> kFundNames = {
+inline const std::vector<std::string_view> kFundNames = {
   "Money Market",
   "Prime Money Market",
   "Long Term Bond",

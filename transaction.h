@@ -10,9 +10,10 @@
 //Breaks
 
 #ifndef TRANSACTION_H_
-#define TRANSACITON_H_
+#define TRANSACTION_H_
 
 #include "fund_type.h"
+#include <vector>
 #include <ostream>
 #include <string>
 
@@ -27,25 +28,25 @@ class Transaction {
     Transaction(const Transaction &rhs);
     //~Transaction();
 
-    void SetName(const vector<string> &name);
+    void SetName(const std::vector<std::string> &name);
     //TODO: make a check for this to not overwrite read-only state
     void Clear();
     void Affirm(const bool &state);
 
     
 
-    const char Instruction();
-    const int SrcID();
-    const int DstID();
+    char Instruction() const;
+    int SrcID() const;
+    int DstID() const;
     
-    const int Amount();
+    int Amount() const;
 
-    vector<string> Name();
+    std::vector<std::string> Name();
 
-    const int DstFund();
-    const int SrcFund();
+    int DstFund() const;
+    int SrcFund() const;
 
-    const bool Success();
+    bool Success() const;
    
 
 
@@ -53,9 +54,9 @@ class Transaction {
     void Setup(const char &instr, const int &srcID, const int &srcFund, 
                 const int &dstID, const int &dstFund, const int &amount);
     //strings imply this is an open.
-    void Setup(const int &ID, const vector<string> &name);
+    void Setup(const int &ID, const std::vector<std::string> &name);
 
-    friend ostream& operator<<(ostream& out, const Transaction &rhs);
+    friend std::ostream& operator<<(std::ostream& out, const Transaction &rhs);
 
   private:
     char instruction_;
@@ -63,7 +64,7 @@ class Transaction {
     int srcID_;
     int dstID_;
 
-    vector<string> name_;
+    std::vector<std::string> name_;
 
     //based around FundType
     int dstFund_;

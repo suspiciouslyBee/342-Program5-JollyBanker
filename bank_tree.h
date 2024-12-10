@@ -11,6 +11,7 @@
 
 
 #include <iostream>
+#include <ostream>
 #include <fstream>
 #include <string>
 #include <queue>
@@ -44,8 +45,9 @@ class BankTree {
     bool MoveFunds(Transaction &rhs);
 
     //special bst manip
-    bool AuditClient(const int &clientID, ostream &out);
-    bool AuditClient(const int &clientID, const int &fundID, ostream &out);
+    bool AuditClient(const int &clientID, ostream &out = cout);
+    bool AuditClient(const int &clientID, const int &fundID, 
+                      ostream &out = cout);
 
     //bst manip
     //bool Contains(const int &clientID, Client *&account);
@@ -63,4 +65,6 @@ class BankTree {
     queue<Transaction> transactionQueue_;  
 };
 
-#endif BANKTREE_H_
+
+ostream& operator<<(ostream& out, BankTree &rhs);
+#endif //BANKTREE_H_

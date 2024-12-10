@@ -61,19 +61,19 @@ void Transaction::Affirm(const bool &state)
   }
 }
 
-const char Transaction::Instruction() {
+char Transaction::Instruction() const {
   return instruction_;
 }
 
-const int Transaction::SrcID() {
+int Transaction::SrcID() const {
   return srcID_;
 }
 
-const int Transaction::DstID() {
+int Transaction::DstID() const {
   return dstID_;
 }
 
-const int Transaction::Amount() {
+int Transaction::Amount() const {
   return amount_;
 }
 
@@ -81,11 +81,11 @@ vector<string> Transaction::Name() {
   return name_;
 }
 
-const int Transaction::SrcFund() {
+int Transaction::SrcFund() const {
   return srcFund_;
 }
 
-const bool Transaction::Success(){
+bool Transaction::Success() const {
   return success_;
 }
 
@@ -106,7 +106,7 @@ void Transaction::Setup(const int &ID, const vector<string> &name) {
   srcID_ = ID;
 }
 
-const int Transaction::DstFund() {
+int Transaction::DstFund() const {
   return dstFund_;
 }
 
