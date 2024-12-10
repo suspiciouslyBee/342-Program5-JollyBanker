@@ -1,0 +1,5 @@
+ERROR: Insufficient funds from  Growth Index at Account # 1001, Owner: Johnny Cash Withdrawl Refused.
+ERROR: Both Accounts not found. Transfer needs two valid IDs. Transferal refused: 
+srcID: 1253  dstID: 4356
+
+Account #9876 already exists. Transaction Refused.

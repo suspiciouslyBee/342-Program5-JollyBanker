@@ -1,0 +1,199 @@
+General Audit of Account #1001, Owner: Johnny Cash
+	Fund: Money Market
+		Total: $470
+		History:
+		  D 1001 0 542
+		  W 1001 0 72
+	Fund: Prime Money Market
+		Total: $3042
+		History:
+		  D 1001 1 1542
+		  D 1001 1 1500
+	Fund: Long Term Bond
+		Total: $10442
+		History:
+		  D 1001 2 5442
+		  D 1001 2 5000
+	Fund: Short Term Bond
+		Total: $14540
+		History:
+		  D 1001 3 7540
+		  D 1001 3 7000
+	Fund: Top 500 Index
+		Total: $0
+	Fund: Capital Value
+		Total: $54
+		History:
+		  T 1001 7 1001 5 54
+	Fund: Growth Equity
+		Total: $15053
+		History:
+		  D 1001 6 7542
+		  D 1001 6 7576
+		  W 1001 6 65
+	Fund: Growth Index
+		Total: $10931
+		History:
+		  D 1001 7 5442
+		  D 1001 7 6543
+		  W 1001 7 1000
+		  T 1001 7 1001 5 54
+		  W 1001 7 20000 (Failed)
+
+Targeted Fund Audit of Account #1253. Owner: Hank Williams
+	Fund: Top 500 Index
+		Total: $10000
+		History:
+		  D 1253 4 10000
+
+General Audit of Account #1253, Owner: Hank Williams
+	Fund: Money Market
+		Total: $10000
+		History:
+		  D 1253 0 10000
+	Fund: Prime Money Market
+		Total: $10000
+		History:
+		  D 1253 1 10000
+	Fund: Long Term Bond
+		Total: $0
+		History:
+		  D 1253 2 10000
+		  T 1253 3 1253 2 5000
+		  W 1253 2 15000
+	Fund: Short Term Bond
+		Total: $5000
+		History:
+		  D 1253 3 10000
+		  T 1253 3 1253 2 5000
+	Fund: Top 500 Index
+		Total: $10000
+		History:
+		  D 1253 4 10000
+	Fund: Capital Value
+		Total: $10000
+		History:
+		  D 1253 5 10000
+	Fund: Growth Equity
+		Total: $10000
+		History:
+		  D 1253 6 10000
+	Fund: Growth Index
+		Total: $10000
+		History:
+		  D 1253 7 10000
+
+Account Overview for #500. Owner: George Jones
+	Fund: Money Market
+		Total: $0
+	Fund: Prime Money Market
+		Total: $0
+	Fund: Long Term Bond
+		Total: $0
+	Fund: Short Term Bond
+		Total: $0
+	Fund: Top 500 Index
+		Total: $0
+	Fund: Capital Value
+		Total: $0
+	Fund: Growth Equity
+		Total: $0
+	Fund: Growth Index
+		Total: $0
+
+
+Account Overview for #1001. Owner: Johnny Cash
+	Fund: Money Market
+		Total: $0
+	Fund: Prime Money Market
+		Total: $3012
+	Fund: Long Term Bond
+		Total: $10442
+	Fund: Short Term Bond
+		Total: $14540
+	Fund: Top 500 Index
+		Total: $0
+	Fund: Capital Value
+		Total: $54
+	Fund: Growth Equity
+		Total: $15053
+	Fund: Growth Index
+		Total: $10931
+
+
+Account Overview for #1253. Owner: Hank Williams
+	Fund: Money Market
+		Total: $10000
+	Fund: Prime Money Market
+		Total: $0
+	Fund: Long Term Bond
+		Total: $0
+	Fund: Short Term Bond
+		Total: $5000
+	Fund: Top 500 Index
+		Total: $10000
+	Fund: Capital Value
+		Total: $10000
+	Fund: Growth Equity
+		Total: $10000
+	Fund: Growth Index
+		Total: $10000
+
+
+Account Overview for #2000. Owner: Jay Farrar
+	Fund: Money Market
+		Total: $0
+	Fund: Prime Money Market
+		Total: $0
+	Fund: Long Term Bond
+		Total: $0
+	Fund: Short Term Bond
+		Total: $0
+	Fund: Top 500 Index
+		Total: $0
+	Fund: Capital Value
+		Total: $0
+	Fund: Growth Equity
+		Total: $0
+	Fund: Growth Index
+		Total: $0
+
+
+Account Overview for #3000. Owner: Sturgill Simpson
+	Fund: Money Market
+		Total: $0
+	Fund: Prime Money Market
+		Total: $0
+	Fund: Long Term Bond
+		Total: $0
+	Fund: Short Term Bond
+		Total: $0
+	Fund: Top 500 Index
+		Total: $500
+	Fund: Capital Value
+		Total: $0
+	Fund: Growth Equity
+		Total: $0
+	Fund: Growth Index
+		Total: $0
+
+
+Account Overview for #9876. Owner: Willie Nelson
+	Fund: Money Market
+		Total: $0
+	Fund: Prime Money Market
+		Total: $10000
+	Fund: Long Term Bond
+		Total: $0
+	Fund: Short Term Bond
+		Total: $0
+	Fund: Top 500 Index
+		Total: $0
+	Fund: Capital Value
+		Total: $0
+	Fund: Growth Equity
+		Total: $0
+	Fund: Growth Index
+		Total: $0
+
+
