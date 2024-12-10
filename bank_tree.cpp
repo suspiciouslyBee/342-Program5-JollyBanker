@@ -167,8 +167,13 @@ bool BankTree::ExecuteTransaction(Transaction &rhs) {
 //Wrapper for Insert, id must be pos.
 bool BankTree::CreateClient(Transaction &rhs) {
   Client *dummy = root_;
-  if(Insert(rhs.Name(), rhs.SrcID(), dummy)) { return false; }
-  return true;
+  if(Insert(rhs.Name(), rhs.SrcID(), dummy)) { 
+
+    return true; 
+  }
+  cerr << "Account #" << rhs.SrcID() << " already exists. "
+       << "Transaction Refused." << endl;
+  return false;
 }
 
 
@@ -246,17 +251,17 @@ bool BankTree::MoveFunds(Transaction &rhs) {
         rhs.Affirm(false);
         errorTgt->AppendInstruction(rhs);
 
-        cerr << "ERROR: Both Accounts not found. T needs two valid IDs." 
+        cerr << "ERROR: Both Accounts not found. Transfer needs two valid IDs. " 
               << "Transferal refused: \n";
 
         cerr << "srcID: ";
         if(rhs.SrcID() == -1) {
          cerr << "Placeholder Deposit ID -1\n";
         } else {
-        cerr << rhs.SrcID() << endl;
+        cerr << rhs.SrcID() << "  ";
         }
 
-        cerr << "srcID: ";
+        cerr << "dstID: ";
         if(rhs.DstID() == -1) {
           cerr << "Placeholder Withdrawl ID -1\n";
         } else {
@@ -292,7 +297,10 @@ bool BankTree::MoveFunds(Transaction &rhs) {
         cerr << endl;
 
         rhs.Affirm(false);
-        dst->AppendInstruction(rhs);
+
+        if(src != dst) {
+          dst->AppendInstruction(rhs);
+        }
         src->AppendInstruction(rhs);
 
         return false;
@@ -300,11 +308,13 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
 
       if(src->Withdrawal(rhs.Amount(), rhs.SrcFund()) < 0) {
-        cerr << "ERROR: Insufficient funds from " 
-          << kFundNames.at(rhs.SrcFund()) << " at " << src->Name()
-          << ", " << rhs.SrcID() << endl;
+        cerr << "ERROR: Insufficient funds from  " 
+          << kFundNames.at(rhs.SrcFund()) << " at Account # " << rhs.SrcID()
+          << ", Owner: " << src->Name() << endl;
         rhs.Affirm(false);
-        dst->AppendInstruction(rhs);
+        if(src != dst) {
+          dst->AppendInstruction(rhs);
+        }
         src->AppendInstruction(rhs);
         return false;
       }
@@ -313,7 +323,9 @@ bool BankTree::MoveFunds(Transaction &rhs) {
       dst->Deposit(rhs.Amount(), rhs.DstFund());
 
       rhs.Affirm(true);
-      dst->AppendInstruction(rhs);
+      if(src != dst) {
+        dst->AppendInstruction(rhs);
+      }
       src->AppendInstruction(rhs);
       return true;
       break;
@@ -356,9 +368,9 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
 
       if(src->Withdrawal(rhs.Amount(), rhs.SrcFund()) < 0) {
-        cerr << "ERROR: Insufficient funds from " 
-          << kFundNames.at(rhs.SrcFund()) << " at " << src->Name()
-          << ", " << rhs.SrcID() << endl;
+        cerr << "ERROR: Insufficient funds from  " 
+          << kFundNames.at(rhs.SrcFund()) << " at Account # " << rhs.SrcID()
+          << ", Owner: " << src->Name() << endl;
         rhs.Affirm(false);
         src->AppendInstruction(rhs);
         return false;
@@ -436,7 +448,7 @@ bool BankTree::AuditClient(const int &clientID, ostream &out) {
   for(int i = 0; i < NUMBEROFFUNDS; i++) {
     result->PrintFund(out, i, true);
   }
-
+  out << endl;
   return true;
 }
 
@@ -457,6 +469,7 @@ bool BankTree::AuditClient(const int &clientID, const int &fundID,
     out << "Targeted Fund Audit of Account #" << result->ID() << ". Owner: " 
         << result->Name() << endl;
     result->PrintFund(out, fundID, true);
+    out << endl;
     return true;
   }
 

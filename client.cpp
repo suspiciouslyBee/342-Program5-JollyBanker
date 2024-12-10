@@ -64,6 +64,7 @@ int Client::Withdrawal(const int &money, const int &fundID) {
       //to be logged *right now*.
       Transaction adHoc('T', ID_, kOverdraftProtectionAccount.at(fundID), ID_,
                         fundID, -difference);
+      adHoc.Affirm(true);
       AppendInstruction(adHoc);
 
       localFunds_[fundID] = 0;
@@ -96,6 +97,10 @@ ostream& operator<<(ostream& out, Client &rhs) {
   
 
   //Loops through all funds
+  
+  out << "Account Overview for #" << rhs.ID() 
+      << ". Owner: "  << rhs.Name() << endl;
+
   for(int i = 0; i < NUMBEROFFUNDS; i++) {
     rhs.PrintFund(out, i, false);
   }
@@ -112,18 +117,16 @@ ostream& operator<<(ostream& out, Client &rhs) {
 ostream& Client::PrintFund(ostream& out, const int &fund, 
                             const bool &showHistory) {
   
-  if(history_.at(fund).size() < 1) { return out; }
 
   out << "\tFund: " << kFundNames.at(fund) << endl;
-  out << "\t\tTotal: " << localFunds_[fund] << "$" << endl;
-  out << "\t\tHistory:" << endl;
-
-  if(showHistory) {
+  out << "\t\tTotal: $" << localFunds_[fund] << endl;
+  
+  if(showHistory && history_.at(fund).size() > 0) {
+    out << "\t\tHistory:" << endl;
     for(int i = 0; i < history_.at(fund).size(); i++) {
       out << "\t\t  " << history_.at(fund).at(i) << endl;
     }
   }
-  out << endl;
   return out;
 
 }
