@@ -27,13 +27,6 @@ BankTree::BankTree(std::string &fileName)
   ExecuteQueue();
 }
 
-/*
-BankTree::BankTree(const BankTree &rhs)
-{
-  count = 0;
-  root_ = nullptr;
-}
-*/
 void BankTree::ClearQueue()
 {
   while(!transactionQueue_.empty()) {
@@ -87,12 +80,10 @@ bool BankTree::BuildQueue(std::string &fileName) {
 
     } else {
       //Keeps parsing until it fails or reaches the max amount of vals
-      //Jank as hell. might have UB if parser still puts stuff in in a fail
       for(int i = 1; !parser.eof() && i < 5; i++) {
         parser >> otherData[i];
       }
-      //build the transactionHopper with our data. passing array and length 
-      //TODO: go back to the old manual setup, or code the parsing in this setup
+      //build the transactionHopper with the data. passing array and length 
     }
 
     
@@ -174,12 +165,17 @@ bool BankTree::ExecuteTransaction(Transaction &rhs) {
 //Wrapper for Insert, id must be pos.
 bool BankTree::CreateClient(Transaction &rhs) {
   Client *dummy = root_;
-  if(Insert(rhs.Name(), rhs.SrcID(), dummy)) { 
 
+  if(rhs.SrcID() < 0) {
+    std::cerr << "Account #" << rhs.SrcID()  << " is invalid. "
+              << "Enrollment refused." << std::endl;
+  }
+
+  if(Insert(rhs.Name(), rhs.SrcID(), dummy)) { 
     return true; 
   }
   std::cerr << "Account #" << rhs.SrcID() << " already exists. "
-       << "Transaction Refused." << std::endl;
+       << "Enrollment Refused." << std::endl;
   return false;
 }
 
@@ -240,7 +236,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
   //node validation checks
   switch(rhs.Instruction()) {
-    case 'T':
+    case 'T': //Transaction Case
 
       //one of them is now null, if its a transfer thats breaking! bail!
       if(rhs.Instruction() == 'T' && (src == nullptr || dst == nullptr)) {
@@ -327,7 +323,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
       src->AppendTransaction(rhs);
       return rhs.Success();
       break;
-    case 'W':
+    case 'W': //Withdrawl Case
 
       //Source node does not exist
       if(src == nullptr) { 
@@ -379,7 +375,7 @@ bool BankTree::MoveFunds(Transaction &rhs) {
       src->AppendTransaction(rhs);
       return true;
       break;
-    case 'D':
+    case 'D': //Deposit Case
 
 
       //Source node does not exist
@@ -482,10 +478,8 @@ bool BankTree::AuditClient(const int &clientID, const int &fundID,
 
 bool BankTree::Insert(std::vector<std::string> name, const int &ID, 
                 Client *node) {
-	////
-	// check for match first, should return nullptr. if we dont have a 
-	// nullptr that means a match was found
-	////
+
+
 	bool latch = true;
 
 	if (root_ == nullptr) {
@@ -494,7 +488,7 @@ bool BankTree::Insert(std::vector<std::string> name, const int &ID,
 		return true;
 	}
 
-
+  	// checks for match, should return nullptr. bails otherwise
 	if (Find(ID, node) != nullptr) { return false; } //match
 
 	while (latch) {
@@ -544,10 +538,8 @@ Client* BankTree::Find(const int &ID, Client* node) const {
 			}
 		}
 
-		////
 		// When here: if node has a value, and the value is greater or less 
-		// than all other values, we can then take node and use that for insert
-		////
+		// than all other values, can then take node and use that for insert
 
 		return nullptr;
 	}
