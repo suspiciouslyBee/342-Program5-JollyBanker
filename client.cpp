@@ -20,6 +20,7 @@ Client::Client(const int &ID, std::vector<std::string> name) {
   right_ = nullptr;
   left_ = nullptr;
   history_.resize(kNumberOfFunds);
+  localFunds_.resize(kNumberOfFunds, 0);
 }
 
 

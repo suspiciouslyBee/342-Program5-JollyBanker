@@ -244,7 +244,6 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 
       //one of them is now null, if its a transfer thats breaking! bail!
       if(rhs.Instruction() == 'T' && (src == nullptr || dst == nullptr)) {
-       //write fail, ternary to keep code clean (breaks c++ guidelines)
 
         Client *errorTgt = nullptr;
 
@@ -429,17 +428,19 @@ bool BankTree::MoveFunds(Transaction &rhs) {
 }
 
 
-//todo, print name for these
-
 bool BankTree::AuditClient(const int &clientID, std::ostream &out) const {
   //find the client
 
-  Client *result = root_;
+  Client *result = nullptr;
 
-  result = Find(clientID, result);
+  result = Find(clientID, root_);
 
-  // no match? bail! TODO: make print for missing thing
-  if(result == nullptr) { return false; }
+
+  // no match? bail!
+  if(result == nullptr) {
+    std::cerr << "Account #" << clientID << " Not found." << std::endl;
+    return false; 
+  }
 
   out << "General Audit of Account #" << result->ID() << ", Owner: " 
       << result->Name() << std::endl;
@@ -459,8 +460,11 @@ bool BankTree::AuditClient(const int &clientID, const int &fundID,
 
   result = Find(clientID, root_);
 
-  // no match? bail! TODO: make print for missing thing
-  if(result == nullptr) { return false; }
+  // no match? bail!
+  if(result == nullptr) {
+    std::cerr << "Account #" << clientID << " Not found." << std::endl;
+    return false; 
+  }
 
  
 

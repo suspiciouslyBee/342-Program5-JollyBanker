@@ -62,7 +62,7 @@ class Client {
     int ID_;
 
     
-    int localFunds_[8] = {0}; //hardcoded size for now
+    std::vector<int> localFunds_; //hardcoded size for now
 
     
   

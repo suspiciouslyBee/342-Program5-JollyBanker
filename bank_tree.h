@@ -38,8 +38,7 @@ class BankTree {
     //Wrappers 
     bool ExecuteTransaction(Transaction &rhs);
     bool CreateClient(Transaction &item);
-
-    //Abstractedtransaction manip
+    //Abstracted transaction manip//Wrapper
     bool MoveFunds(Transaction &rhs);
 
     //special bst manip
