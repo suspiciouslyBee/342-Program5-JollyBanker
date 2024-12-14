@@ -29,9 +29,8 @@ enum FundType {
   kNumberOfFunds, //Abuses enum behavior to get item # (8 in this case)
 };
 
-
 //TODO: make this constant
-inline const std::vector<FundType> kOverdraftProtectionAccount = {
+const std::vector<FundType> kOverdraftProtectionAccount = {
   kPrimeMoneyMarket,
   kMoneyMarket,
   kShortTermBond,
@@ -45,7 +44,7 @@ inline const std::vector<FundType> kOverdraftProtectionAccount = {
 
 //corresponding global lookup table for fund names with index parity
 //TODO: make this constant
-inline const std::vector<std::string_view> kFundNames = {
+const std::vector<std::string> kFundNames = {
   "Money Market",
   "Prime Money Market",
   "Long Term Bond",
